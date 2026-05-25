@@ -39,6 +39,13 @@ public class Jugador {
     int anchoPantalla;
     int altoPantalla;
 
+    //Atributos para aplicar gravedad
+    private double velocidadY = 0;
+    private double gravedad = 0.8;
+    private double fuerzaSalto = -18;
+    private boolean enSuelo = false;
+    private int sueloY;
+
     public Jugador(InputManager teclado, int anchoPantalla, int altoPantalla, int xInicial, int yInicial, int numeroJugador) {
 
         this.teclado = teclado;
@@ -53,6 +60,9 @@ public class Jugador {
 
         ancho = 50;
         alto = 50;
+
+        sueloY = altoPantalla - alto; //Hacer que siempre comience en el suelo
+        y = sueloY;
 
         direccion = "abajo";
 
@@ -168,23 +178,20 @@ public class Jugador {
 
         aplicarLimitesPantalla();
 
-        if (moverArriba) {
-
-            if (y > 0) {
-                y -= velocidad;
-            }
-
+        if (moverArriba && enSuelo) {
+            velocidadY = fuerzaSalto;
+            enSuelo = false;
             direccion = "arriba";
         }
 
-        if (moverAbajo) {
+       /* if (moverAbajo) {
 
             if (y + alto < altoPantalla) {
                 y += velocidad;
             }
 
             direccion = "abajo";
-        }
+        } */
 
         if (moverIzquierda) {
 
@@ -202,6 +209,15 @@ public class Jugador {
             }
 
             direccion = "derecha";
+        }
+
+        velocidadY += gravedad;
+        y += (int) velocidadY;
+
+        if (y >= sueloY) {
+            y = sueloY;
+            velocidadY = 0;
+            enSuelo = true;
         }
 
         hurtbox.setPosicion(x, y); //Cuando el jugador se mueve, la hitbox debe perseguirlo
@@ -449,7 +465,9 @@ public class Jugador {
 
     public void reiniciar(int xInicial, int yInicial) {
         x = xInicial;
-        y = yInicial;
+        y = sueloY;
+        velocidadY = 0;
+        enSuelo = true;
 
         vida = 200;
 

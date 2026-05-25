@@ -26,6 +26,8 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
     public boolean tecla1;
     public boolean tecla2;
 
+    public boolean escape;
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -99,6 +101,11 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
             poder2 = true;
         }
 
+        //Salir al menú
+        if (codigo == KeyEvent.VK_ESCAPE) {
+            escape = true;
+        }
+
     }
 
     @Override
@@ -165,6 +172,10 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
 
         if (codigo == KeyEvent.VK_O) {
             poder2 = false;
+        }
+
+        if (codigo == KeyEvent.VK_ESCAPE) {
+            escape = false;
         }
 
     }

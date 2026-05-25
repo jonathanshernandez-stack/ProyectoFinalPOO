@@ -1,0 +1,4 @@
+mn;2000;21;1 Jugador
+CPU;1000;21;1 Jugador
+jonathan;2000;12;1 Jugador
+CPU;1300;12;1 Jugador

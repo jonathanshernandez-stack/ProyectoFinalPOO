@@ -4,9 +4,13 @@ package Proyecto_final.vista;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.Graphics;
+import java.util.ArrayList;
+
 import Proyecto_final.controlador.GameLoop;
+import Proyecto_final.controlador.GestorRanking;
 import Proyecto_final.controlador.InputManager;
 import Proyecto_final.modelo.Jugador;
+import Proyecto_final.modelo.RegistroRanking;
 
 public class PanelJuego extends JPanel {
 
@@ -41,7 +45,12 @@ public class PanelJuego extends JPanel {
     Menu menu = new Menu();
     Escenario escenario = new Escenario();
 
-    HUD hud = new HUD();       ////////////////////////////////
+    HUD hud = new HUD();  //Head up Display, informacion en pantalla
+
+    GestorRanking gestorRanking = new GestorRanking();
+    ArrayList<RegistroRanking> ranking = new ArrayList<>();
+    boolean rankingGuardado = false;
+
 
     long tiempoInicioPartida;
     int tiempoPartida = 0;
@@ -51,7 +60,6 @@ public class PanelJuego extends JPanel {
 
     int vidaAnteriorJugador1 = 200;
     int vidaAnteriorJugador2 = 200;
-/// //////////////
 
     public PanelJuego () {
 
@@ -90,26 +98,17 @@ public class PanelJuego extends JPanel {
         tiempoInicioPartida = System.currentTimeMillis();
         tiempoPartida = 0;
 
+        rankingGuardado = false;
+
         estadoJuego = JUGANDO;
     }
 
     public void update () { //consulta estados al teclado
 
-         /*if (teclado.arriba) {
-            System.out.println("ARRIBA");
+        if (teclado.escape) {
+            estadoJuego = MENU;
+            return;
         }
-
-        if (teclado.abajo) {
-            System.out.println("ABAJO");
-        }
-
-        if (teclado.derecha) {
-            System.out.println("DERECHA");
-        }
-
-        if (teclado.izquierda) {
-            System.out.println("IZQUIERDA");
-        }*/
 
         if (estadoJuego == MENU) {
             if (teclado.enter) {
@@ -197,9 +196,33 @@ public class PanelJuego extends JPanel {
 
         if (estadoJuego == JUGANDO) {
             if (jugador1.getVida() <= 0 || jugador2.getVida() <= 0) {
+
+                if (!rankingGuardado) { //Evita que se guarde 60 veces por segundo
+
+                    String modo = contraPC ? "1 Jugador" : "2 Jugadores";
+
+                    gestorRanking.guardarRegistro(
+                            new RegistroRanking(nombreJugador1, puntajeJugador1, tiempoPartida, modo)
+                    );
+
+                    gestorRanking.guardarRegistro(
+                            new RegistroRanking(nombreJugador2, puntajeJugador2, tiempoPartida, modo)
+                    );
+
+                    ranking = gestorRanking.leerRanking();
+
+                    rankingGuardado = true;
+                }
+
                 estadoJuego = FIN;
             }
         }
+
+        /* if (estadoJuego == JUGANDO) {
+            if (jugador1.getVida() <= 0 || jugador2.getVida() <= 0) {
+                estadoJuego = FIN;
+            }
+        } */
 
         if (estadoJuego == FIN) {
             if (teclado.enter) {
@@ -260,7 +283,25 @@ public class PanelJuego extends JPanel {
             g.drawString(nombreJugador2 + ": " + puntajeJugador2 + " puntos", 520, 660);
 
             g.setFont(new Font("Arial", Font.BOLD, 35));
-            g.drawString("Presiona ENTER para reiniciar", 500, 730);
+            g.drawString("TOP 3 RANKING", 600, 720);
+
+            g.setFont(new Font("Arial", Font.BOLD, 25));
+
+            for (int i = 0; i < ranking.size() && i < 3; i++) {
+                RegistroRanking registro = ranking.get(i);
+
+                g.drawString(
+                        (i + 1) + ". " +
+                                registro.getNombre() + " - " +
+                                registro.getPuntaje() + " pts - " +
+                                registro.getTiempo() + "s - " +
+                                registro.getModo(),
+                        430,
+                        770 + (i * 35)
+                );
+            }
+
+            g.drawString("ENTER: reiniciar | ESC: volver al menu", 470, 910);
         }
 
 
