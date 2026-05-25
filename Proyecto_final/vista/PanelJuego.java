@@ -15,6 +15,7 @@ public class PanelJuego extends JPanel {
 
     public static final int MENU = 0; //Estado del menú (0)
     public static final int JUGANDO = 1; //Estado del juego (1)
+    public static final int FIN = 2;
     int estadoJuego = MENU;  //Dice al panel que inicie en el menú
 
 
@@ -88,6 +89,10 @@ public class PanelJuego extends JPanel {
             jugador1.verificarGolpe(jugador2);
             jugador2.verificarGolpe(jugador1);
         }
+
+        if (jugador1.getVida() <= 0 || jugador2.getVida() <= 0) {  //Verificar ganador
+            estadoJuego = FIN;
+        }
     }
 
     @Override //Para sobreescribir el paintComponent que ya tiene JPanel
@@ -107,6 +112,26 @@ public class PanelJuego extends JPanel {
             jugador1.draw(g);
             jugador2.draw(g);
         }
+
+        //Dibujar vidas en pantalla
+        g.setColor(Color.RED);
+        g.fillRect(50, 50, jugador1.getVida() * 2, 30);
+
+        g.setColor(Color.BLUE);
+        g.fillRect(1050, 50, jugador2.getVida() * 2, 30);
+
+        if (estadoJuego == FIN) {
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 60));
+
+            if (jugador1.getVida() <= 0) {
+                g.drawString("GANA JUGADOR 2", 500, 500);
+            } else {
+                g.drawString("GANA JUGADOR 1", 500, 500);
+            }
+        }
+
+
 
         /*
         //Color del pincel

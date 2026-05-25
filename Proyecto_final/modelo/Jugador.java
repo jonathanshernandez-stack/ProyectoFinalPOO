@@ -132,6 +132,10 @@ public class Jugador {
         System.out.println("Vida: " + vida);
     }
 
+    public int getVida() {
+        return vida;
+    }
+
     public void verificarGolpe(Jugador enemigo) {
 
         if (ataqueActual != null &&
