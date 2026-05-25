@@ -30,6 +30,8 @@ public class Jugador {
 
     private PoderEspecial poderEspecial;
 
+    private boolean modoSolo = false;
+
     String direccion;
 
     InputManager teclado;
@@ -121,13 +123,40 @@ public class Jugador {
         boolean botonAtacar;
         boolean botonPoder;
 
-        if (numeroJugador == 1) {    //Darle valor a movimientos para compartir entre multiples jugadores
+         /*if (numeroJugador == 1) {    //Darle valor a movimientos para compartir entre multiples jugadores
             moverArriba = teclado.arriba;
             moverAbajo = teclado.abajo;
             moverIzquierda = teclado.izquierda;
             moverDerecha = teclado.derecha;
             botonAtacar = teclado.atacar;
             botonPoder = teclado.poder;
+        } else {
+            moverArriba = teclado.arriba2;
+            moverAbajo = teclado.abajo2;
+            moverIzquierda = teclado.izquierda2;
+            moverDerecha = teclado.derecha2;
+            botonAtacar = teclado.atacar2;
+            botonPoder = teclado.poder2;
+        }*/
+
+        if (numeroJugador == 1) {
+
+            //Condiciones nuevas de juego, si entra al modo solo para disponer del teclado
+            if (modoSolo) {
+                moverArriba = teclado.arriba2;
+                moverAbajo = teclado.abajo2;
+                moverIzquierda = teclado.izquierda2;
+                moverDerecha = teclado.derecha2;
+                botonAtacar = teclado.atacar;
+                botonPoder = teclado.poder;
+            } else {
+                moverArriba = teclado.arriba;
+                moverAbajo = teclado.abajo;
+                moverIzquierda = teclado.izquierda;
+                moverDerecha = teclado.derecha;
+                botonAtacar = teclado.atacar;
+                botonPoder = teclado.poder;
+            }
         } else {
             moverArriba = teclado.arriba2;
             moverAbajo = teclado.abajo2;
@@ -213,6 +242,10 @@ public class Jugador {
         if (poderEspecial != null && poderEspecial.isActivo()) {
             poderEspecial.update();
         }
+    }
+
+    public void setModoSolo(boolean modoUnJugador) {
+        this.modoSolo = modoUnJugador;
     }
 
     public void recibirDano(int dano) {

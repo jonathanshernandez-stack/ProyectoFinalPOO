@@ -15,7 +15,7 @@ public class PanelJuego extends JPanel {
 
     public static final int MENU = 0; //Estado del menú (0)
     public static final int SELECCION_MODO = 1;
-    public static final int JUGANDO = 2; //Estado del juego (1)
+    public static final int JUGANDO = 2; //Estado del juego (2)
     public static final int FIN = 3;
 
 
@@ -110,6 +110,9 @@ public class PanelJuego extends JPanel {
 
                 nombreJugador2 = "CPU";
 
+                jugador1.setModoSolo(true);  //Se activa el metodo update para un solo jugador
+                jugador2.setModoSolo(false);  //Se ignora juego para cpu (ya existe el metodo para ella)
+
                 estadoJuego = JUGANDO;
             }
 
@@ -127,7 +130,12 @@ public class PanelJuego extends JPanel {
                     nombreJugador2 = "Jugador 2";
                 }
 
+                jugador1.setModoSolo(false);
+                jugador2.setModoSolo(false);
+
                 estadoJuego = JUGANDO;
+
+
             }
         }
 
@@ -158,6 +166,8 @@ public class PanelJuego extends JPanel {
         if (estadoJuego == FIN) {
             if (teclado.enter) {
                 reiniciarPartida();
+                jugador1.setModoSolo(contraPC);
+                jugador2.setModoSolo(false);
             }
         }
     }
