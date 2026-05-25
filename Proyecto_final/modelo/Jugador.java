@@ -1,7 +1,6 @@
 package Proyecto_final.modelo;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
 
 import Proyecto_final.controlador.InputManager;
 
@@ -14,6 +13,12 @@ public class Jugador {
 
     int ancho;
     int alto;
+
+    Hitbox hurtbox;
+
+    Ataque ataqueActual;
+
+    int vida = 200;
 
     String direccion;
 
@@ -37,6 +42,14 @@ public class Jugador {
         alto = 50;
 
         direccion = "abajo";
+
+        hurtbox = new Hitbox(
+                x,
+                y,
+                ancho,
+                alto
+        );
+
     }
 
     public void update() {
@@ -76,6 +89,80 @@ public class Jugador {
 
             direccion = "derecha";
         }
+
+        hurtbox.setPosicion(x, y); //Cuando el jugador se mueve, la hitbox debe perseguirlo
+
+        if (teclado.atacar) {
+            atacar();
+        }
+    }
+
+    public void recibirDano(int dano) {
+
+        vida -= dano;
+
+        if (vida < 0) {
+
+            vida = 0;
+        }
+
+        System.out.println("Vida: " + vida);
+    }
+
+    public void verificarGolpe(Jugador enemigo) {
+
+        if (ataqueActual != null &&
+                ataqueActual.isActivo()) {
+
+            if (ataqueActual.getHitbox()
+                    .colisiona(enemigo.hurtbox)) {
+
+                enemigo.recibirDano(
+                        ataqueActual.getDano()
+                );
+
+                ataqueActual.desactivar();
+
+                System.out.println("GOLPE!");
+            }
+        }
+    }
+
+    public void atacar() {
+
+        if (direccion.equals("derecha")) {
+
+            ataqueActual = new Ataque(
+                    10,
+                    new Hitbox(x + ancho, y + 10, 40, 30)
+            );
+        }
+
+        if (direccion.equals("izquierda")) {
+
+            ataqueActual = new Ataque(
+                    10,
+                    new Hitbox(x - 40, y + 10, 40, 30)
+            );
+        }
+
+        if (direccion.equals("arriba")) {
+
+            ataqueActual = new Ataque(
+                    10,
+                    new Hitbox(x + 10, y - 40, 30, 40)
+            );
+        }
+
+        if (direccion.equals("abajo")) {
+
+            ataqueActual = new Ataque(
+                    10,
+                    new Hitbox(x + 10, y + alto, 30, 40)
+            );
+        }
+
+        ataqueActual.activar();
     }
 
     public void draw(Graphics g) {
@@ -97,5 +184,25 @@ public class Jugador {
         }
 
         g.fillRect(x, y, ancho, alto);
+
+        g.setColor(Color.RED);   //color de hurtbox
+
+        g.drawRect(x, y, ancho, alto);
+
+        if (ataqueActual != null &&
+                ataqueActual.isActivo()) {
+
+            Rectangle r =
+                    ataqueActual.getHitbox().getBounds();
+
+            g.setColor(Color.BLUE);
+
+            g.drawRect(
+                    r.x,
+                    r.y,
+                    r.width,
+                    r.height
+            );
+        }
     }
 }

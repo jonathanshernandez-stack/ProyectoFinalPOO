@@ -10,6 +10,7 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
     public boolean izquierda;
     public boolean derecha;
     public boolean enter;
+    public boolean atacar;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -41,6 +42,10 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
             derecha = true;
         }
 
+        if (codigo == KeyEvent.VK_SPACE) {
+            atacar = true;
+        }
+
     }
 
     @Override
@@ -66,6 +71,10 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
 
         if (codigo == KeyEvent.VK_D) {
             derecha = false;
+        }
+
+        if (codigo == KeyEvent.VK_SPACE) {
+            atacar = false;
         }
 
     }

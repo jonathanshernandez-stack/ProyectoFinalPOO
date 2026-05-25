@@ -18,7 +18,7 @@ public class Escenario {
         try {
 
             fondo = ImageIO.read(
-                    new File("/Users/Jonathan/Documents/poo/Proyecto_final/resources/escenarios/fondo.png")
+                    new File("/Users/Jonathan/Documents/poo/Proyecto_final/resources/escenarios/fondo.png,")
             );
 
         } catch (IOException e) {
