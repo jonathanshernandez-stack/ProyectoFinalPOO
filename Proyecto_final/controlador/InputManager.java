@@ -9,6 +9,7 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
     public boolean abajo;
     public boolean izquierda;
     public boolean derecha;
+    public boolean enter;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -18,7 +19,11 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
     @Override
     public void keyPressed(KeyEvent e) {
 
-        int codigo = e.getKeyCode();  //Codigo hace referencia a la orden por teclado
+        int codigo = e.getKeyCode();  //Convierte la tecla en un codigo numerico
+
+        if (codigo == KeyEvent.VK_ENTER) {
+            enter = true;
+        }
 
         if (codigo == KeyEvent.VK_W) {
             arriba = true;
@@ -40,6 +45,28 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
 
     @Override
     public void keyReleased(KeyEvent e) {
+
+        int codigo = e.getKeyCode();
+
+        if (codigo == KeyEvent.VK_ENTER) {
+            enter = false;
+        }
+
+        if (codigo == KeyEvent.VK_W) {
+            arriba = false;
+        }
+
+        if (codigo == KeyEvent.VK_S) {
+            abajo = false;
+        }
+
+        if (codigo == KeyEvent.VK_A) {
+            izquierda = false;
+        }
+
+        if (codigo == KeyEvent.VK_D) {
+            derecha = false;
+        }
 
     }
 }

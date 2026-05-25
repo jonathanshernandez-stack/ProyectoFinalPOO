@@ -9,12 +9,23 @@ Corazón del juego
 
 //Ya que el juego nunca se detiene, necesitamos contener motor del juego dentro de un while o do while
 
+import Proyecto_final.vista.PanelJuego;
+
 public class GameLoop implements Runnable{  //Implements Runnable significa que puede ejecutar en un hilo
+
+    PanelJuego panelJuego; //Ahora el loop conoce el panel
+
+    public GameLoop (PanelJuego panelJuego) {
+        this.panelJuego = panelJuego;
+    }
 
     @Override
     public void run() {  //el corazon del juego
         while (true) {
-            System.out.println("Actualizando el juego");
+
+            panelJuego.update(); //Actualiza el estado (movimiento, ataques, fisica, etc..)
+
+            panelJuego.repaint(); //Le dice a swing "Vuelve a dibujar el panel"
 
             try {
 
