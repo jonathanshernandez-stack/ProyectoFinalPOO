@@ -20,6 +20,9 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
     public boolean derecha2;
     public boolean atacar2;
 
+    public boolean poder;
+    public boolean poder2;
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -75,6 +78,16 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
             atacar2 = true;
         }
 
+        //poderes
+
+        if (codigo == KeyEvent.VK_Q) {
+            poder = true;
+        }
+
+        if (codigo == KeyEvent.VK_O) {
+            poder2 = true;
+        }
+
     }
 
     @Override
@@ -125,6 +138,14 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
 
         if (codigo == KeyEvent.VK_P) {
             atacar2 = false;
+        }
+
+        if (codigo == KeyEvent.VK_Q) {
+            poder = false;
+        }
+
+        if (codigo == KeyEvent.VK_O) {
+            poder2 = false;
         }
 
     }

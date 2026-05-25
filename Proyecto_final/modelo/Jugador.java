@@ -22,6 +22,14 @@ public class Jugador {
 
     int numeroJugador;
 
+    boolean mostrarGolpe = false;
+    int tiempoGolpe = 0;
+
+    private double empujeX = 0;
+    private double empujeY = 0;
+
+    private PoderEspecial poderEspecial;
+
     String direccion;
 
     InputManager teclado;
@@ -55,6 +63,55 @@ public class Jugador {
 
     }
 
+    public void lanzarPoder() {
+        if (poderEspecial == null || !poderEspecial.isActivo()) { //Significa, no se puede lanzar un poder si hay otro activo
+
+            int poderX = x;
+            int poderY = y + alto / 2;
+
+            if (direccion.equals("derecha")) {
+                poderX = x + ancho;
+            }
+
+            if (direccion.equals("izquierda")) {
+                poderX = x - 80;
+            }
+
+            if (direccion.equals("arriba")) {
+                poderY = y - 40;
+            }
+
+            if (direccion.equals("abajo")) {
+                poderY = y + alto;
+            }
+
+            poderEspecial = new PoderEspecial(poderX, poderY, direccion);
+        }
+    }
+
+    private void aplicarLimitesPantalla() {
+
+        if (x < 0) {
+            x = 0;
+            empujeX = 0;
+        }
+
+        if (y < 0) {
+            y = 0;
+            empujeY = 0;
+        }
+
+        if (x + ancho > anchoPantalla) {
+            x = anchoPantalla - ancho;
+            empujeX = 0;
+        }
+
+        if (y + alto > altoPantalla) {
+            y = altoPantalla - alto;
+            empujeY = 0;
+        }
+    }
+
     public void update() {
 
         boolean moverArriba;
@@ -62,6 +119,7 @@ public class Jugador {
         boolean moverIzquierda;
         boolean moverDerecha;
         boolean botonAtacar;
+        boolean botonPoder;
 
         if (numeroJugador == 1) {    //Darle valor a movimientos para compartir entre multiples jugadores
             moverArriba = teclado.arriba;
@@ -69,13 +127,17 @@ public class Jugador {
             moverIzquierda = teclado.izquierda;
             moverDerecha = teclado.derecha;
             botonAtacar = teclado.atacar;
+            botonPoder = teclado.poder;
         } else {
             moverArriba = teclado.arriba2;
             moverAbajo = teclado.abajo2;
             moverIzquierda = teclado.izquierda2;
             moverDerecha = teclado.derecha2;
             botonAtacar = teclado.atacar2;
+            botonPoder = teclado.poder2;
         }
+
+        aplicarLimitesPantalla();
 
         if (moverArriba) {
 
@@ -118,6 +180,39 @@ public class Jugador {
         if (botonAtacar) {
             atacar();
         }
+
+        if (botonPoder) {
+            lanzarPoder();
+        }
+
+        // Aplicar empuje cuando recibe un golpe
+        x += (int) empujeX;
+        y += (int) empujeY;
+
+        // Reducir poco a poco el empuje
+        empujeX *= 0.8;
+        empujeY *= 0.8;
+
+        // Si el empuje ya es muy pequeño, lo apagamos
+        if (Math.abs(empujeX) < 1) {
+            empujeX = 0;
+        }
+
+        if (Math.abs(empujeY) < 1) {
+            empujeY = 0;
+        }
+
+        if (tiempoGolpe > 0) {
+            tiempoGolpe--;
+        } else {
+            mostrarGolpe = false;
+        }
+
+        //Activar poder especial
+
+        if (poderEspecial != null && poderEspecial.isActivo()) {
+            poderEspecial.update();
+        }
     }
 
     public void recibirDano(int dano) {
@@ -129,6 +224,9 @@ public class Jugador {
             vida = 0;
         }
 
+        mostrarGolpe = true;
+        tiempoGolpe = 30;
+
         System.out.println("Vida: " + vida);
     }
 
@@ -138,15 +236,16 @@ public class Jugador {
 
     public void verificarGolpe(Jugador enemigo) {
 
-        if (ataqueActual != null &&
-                ataqueActual.isActivo()) {
+        if (ataqueActual != null && ataqueActual.isActivo()) {
 
-            if (ataqueActual.getHitbox()
-                    .colisiona(enemigo.hurtbox)) {
+            if (ataqueActual.getHitbox().colisiona(enemigo.hurtbox)) {
 
-                enemigo.recibirDano(
-                        ataqueActual.getDano()
-                );
+                enemigo.recibirDano(ataqueActual.getDano());
+                if (this.x < enemigo.x) {                     //Significa, si estoy a la derecha, empujo a la izquiera y viceversa
+                    enemigo.recibirEmpuje(20, 0);
+                } else {
+                    enemigo.recibirEmpuje(-20, 0);
+                }
 
                 ataqueActual.desactivar();
 
@@ -192,6 +291,22 @@ public class Jugador {
         ataqueActual.activar();
     }
 
+    public void recibirEmpuje(int fuerzaX, int fuerzaY) { //Metodo para empuje en el daño
+        empujeX = fuerzaX;
+        empujeY = fuerzaY;
+    }
+
+    public void verificarPoder(Jugador enemigo) {
+        if (poderEspecial != null && poderEspecial.isActivo()) {
+            if (poderEspecial.getBounds().intersects(enemigo.hurtbox.getBounds())) {
+                enemigo.recibirDano(poderEspecial.getDano());
+                enemigo.recibirEmpuje(this.x < enemigo.x ? 30 : -30, 0);
+                poderEspecial.desactivar();
+                System.out.println("PODER ESPECIAL!");
+            }
+        }
+    }
+
     public void draw(Graphics g) {
 
         if (direccion.equals("arriba")) {
@@ -216,8 +331,7 @@ public class Jugador {
 
         g.drawRect(x, y, ancho, alto);
 
-        if (ataqueActual != null &&
-                ataqueActual.isActivo()) {
+        if (ataqueActual != null && ataqueActual.isActivo()) {
 
             Rectangle r =
                     ataqueActual.getHitbox().getBounds();
@@ -231,5 +345,16 @@ public class Jugador {
                     r.height
             );
         }
+
+        if (mostrarGolpe) {
+            g.setColor(Color.YELLOW);
+            g.drawString("GOLPE!", x, y - 20);
+        }
+
+        if (poderEspecial != null && poderEspecial.isActivo()) {
+            poderEspecial.draw(g);
+        }
     }
+
+
 }

@@ -27,7 +27,7 @@ public class PanelJuego extends JPanel {
 
     InputManager teclado = new InputManager();
 
-    Jugador jugador1 = new Jugador(teclado, anchoPantalla, altoPantalla, 200, 500, 1);  //Le damos acceso a los jugadores
+    Jugador jugador1 = new Jugador(teclado, anchoPantalla, altoPantalla, 200, 500, 1);  //Le damos acceso a los jugadores en 2 posiciones diferentes
     Jugador jugador2 = new Jugador(teclado, anchoPantalla, altoPantalla, 1200, 500, 2);
 
     Menu menu = new Menu();
@@ -88,6 +88,8 @@ public class PanelJuego extends JPanel {
 
             jugador1.verificarGolpe(jugador2);
             jugador2.verificarGolpe(jugador1);
+            jugador1.verificarPoder(jugador2);
+            jugador2.verificarPoder(jugador1);
         }
 
         if (jugador1.getVida() <= 0 || jugador2.getVida() <= 0) {  //Verificar ganador
