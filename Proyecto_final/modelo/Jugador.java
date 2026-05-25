@@ -20,6 +20,8 @@ public class Jugador {
 
     int vida = 200;
 
+    int numeroJugador;
+
     String direccion;
 
     InputManager teclado;
@@ -27,14 +29,15 @@ public class Jugador {
     int anchoPantalla;
     int altoPantalla;
 
-    public Jugador(InputManager teclado, int anchoPantalla, int altoPantalla) {
+    public Jugador(InputManager teclado, int anchoPantalla, int altoPantalla, int xInicial, int yInicial, int numeroJugador) {
 
         this.teclado = teclado;
         this.anchoPantalla = anchoPantalla;
         this.altoPantalla = altoPantalla;
+        this.numeroJugador = numeroJugador;
 
-        x = 100;
-        y = 100;
+        x = xInicial; //Posicion de prueba de personajes en pantalla, esto permite crear jugadores en posiciones diferentes, diferente a dar valor fijo
+        y = yInicial;
 
         velocidad = 5;
 
@@ -54,7 +57,27 @@ public class Jugador {
 
     public void update() {
 
-        if (teclado.arriba) {
+        boolean moverArriba;
+        boolean moverAbajo;
+        boolean moverIzquierda;
+        boolean moverDerecha;
+        boolean botonAtacar;
+
+        if (numeroJugador == 1) {    //Darle valor a movimientos para compartir entre multiples jugadores
+            moverArriba = teclado.arriba;
+            moverAbajo = teclado.abajo;
+            moverIzquierda = teclado.izquierda;
+            moverDerecha = teclado.derecha;
+            botonAtacar = teclado.atacar;
+        } else {
+            moverArriba = teclado.arriba2;
+            moverAbajo = teclado.abajo2;
+            moverIzquierda = teclado.izquierda2;
+            moverDerecha = teclado.derecha2;
+            botonAtacar = teclado.atacar2;
+        }
+
+        if (moverArriba) {
 
             if (y > 0) {
                 y -= velocidad;
@@ -63,7 +86,7 @@ public class Jugador {
             direccion = "arriba";
         }
 
-        if (teclado.abajo) {
+        if (moverAbajo) {
 
             if (y + alto < altoPantalla) {
                 y += velocidad;
@@ -72,7 +95,7 @@ public class Jugador {
             direccion = "abajo";
         }
 
-        if (teclado.izquierda) {
+        if (moverIzquierda) {
 
             if (x > ancho ) {
                 x -= velocidad;
@@ -81,7 +104,7 @@ public class Jugador {
             direccion = "izquierda";
         }
 
-        if (teclado.derecha) {
+        if (moverDerecha) {
 
             if (x + ancho < anchoPantalla) {
                 x += velocidad;
@@ -92,7 +115,7 @@ public class Jugador {
 
         hurtbox.setPosicion(x, y); //Cuando el jugador se mueve, la hitbox debe perseguirlo
 
-        if (teclado.atacar) {
+        if (botonAtacar) {
             atacar();
         }
     }

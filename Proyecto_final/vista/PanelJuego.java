@@ -26,7 +26,8 @@ public class PanelJuego extends JPanel {
 
     InputManager teclado = new InputManager();
 
-    Jugador jugador = new Jugador(teclado, anchoPantalla, altoPantalla); // Le damos acceso al jugador al teclado
+    Jugador jugador1 = new Jugador(teclado, anchoPantalla, altoPantalla, 200, 500, 1);  //Le damos acceso a los jugadores
+    Jugador jugador2 = new Jugador(teclado, anchoPantalla, altoPantalla, 1200, 500, 2);
 
     Menu menu = new Menu();
     Escenario escenario = new Escenario();
@@ -81,7 +82,11 @@ public class PanelJuego extends JPanel {
         }
 
         if (estadoJuego == JUGANDO) {
-            jugador.update();
+            jugador1.update();
+            jugador2.update();
+
+            jugador1.verificarGolpe(jugador2);
+            jugador2.verificarGolpe(jugador1);
         }
     }
 
@@ -98,8 +103,9 @@ public class PanelJuego extends JPanel {
         if (estadoJuego == JUGANDO) {
 
             escenario.draw(g);
-
-            jugador.draw(g);  // orden fundamental para dibujar personaje encima del escenario
+                                    // orden fundamental para dibujar personaje encima del escenario
+            jugador1.draw(g);
+            jugador2.draw(g);
         }
 
         /*
