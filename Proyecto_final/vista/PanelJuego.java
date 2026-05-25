@@ -41,6 +41,17 @@ public class PanelJuego extends JPanel {
     Menu menu = new Menu();
     Escenario escenario = new Escenario();
 
+    HUD hud = new HUD();       ////////////////////////////////
+
+    long tiempoInicioPartida;
+    int tiempoPartida = 0;
+
+    int puntajeJugador1 = 0;
+    int puntajeJugador2 = 0;
+
+    int vidaAnteriorJugador1 = 200;
+    int vidaAnteriorJugador2 = 200;
+/// //////////////
 
     public PanelJuego () {
 
@@ -69,6 +80,15 @@ public class PanelJuego extends JPanel {
     public void reiniciarPartida() {
         jugador1.reiniciar(200, 500);
         jugador2.reiniciar(1200, 500);
+
+        puntajeJugador1 = 0;
+        puntajeJugador2 = 0;
+
+        vidaAnteriorJugador1 = jugador1.getVida();
+        vidaAnteriorJugador2 = jugador2.getVida();
+
+        tiempoInicioPartida = System.currentTimeMillis();
+        tiempoPartida = 0;
 
         estadoJuego = JUGANDO;
     }
@@ -113,7 +133,8 @@ public class PanelJuego extends JPanel {
                 jugador1.setModoSolo(true);  //Se activa el metodo update para un solo jugador
                 jugador2.setModoSolo(false);  //Se ignora juego para cpu (ya existe el metodo para ella)
 
-                estadoJuego = JUGANDO;
+                reiniciarPartida();
+                return;
             }
 
             if (teclado.tecla2) {
@@ -133,7 +154,8 @@ public class PanelJuego extends JPanel {
                 jugador1.setModoSolo(false);
                 jugador2.setModoSolo(false);
 
-                estadoJuego = JUGANDO;
+                reiniciarPartida();
+                return;
 
 
             }
@@ -151,6 +173,22 @@ public class PanelJuego extends JPanel {
             jugador2.verificarGolpe(jugador1);
             jugador1.verificarPoder(jugador2);
             jugador2.verificarPoder(jugador1);
+
+
+            //Verificar que tanto daño se hizo
+            tiempoPartida = (int) ((System.currentTimeMillis() - tiempoInicioPartida) / 1000);
+
+            if (jugador2.getVida() < vidaAnteriorJugador2) {
+                int danoHecho = vidaAnteriorJugador2 - jugador2.getVida();
+                puntajeJugador1 += danoHecho * 10;  // Jugador ofensivo gana puntos multiplicados por diez
+                vidaAnteriorJugador2 = jugador2.getVida();
+            }
+
+            if (jugador1.getVida() < vidaAnteriorJugador1) {
+                int danoHecho = vidaAnteriorJugador1 - jugador1.getVida();
+                puntajeJugador2 += danoHecho * 10;
+                vidaAnteriorJugador1 = jugador1.getVida();
+            }
         }
 
        /* if (jugador1.getVida() <= 0 || jugador2.getVida() <= 0) {  //Verificar ganador
@@ -202,21 +240,9 @@ public class PanelJuego extends JPanel {
                                     // orden fundamental para dibujar personaje encima del escenario
             jugador1.draw(g);
             jugador2.draw(g);
+
+            hud.draw(g, jugador1, jugador2, nombreJugador1, nombreJugador2, tiempoPartida, puntajeJugador1, puntajeJugador2); //Dibuja vida solo si esta en el juego
         }
-
-
-        //Mostrar nombre de jugador en pantalla (encima de la barra de vida)
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 25));
-        g.drawString(nombreJugador1, 50, 40);
-        g.drawString(nombreJugador2, 1050, 40);
-
-        //Dibujar vidas en pantalla
-        g.setColor(Color.RED);
-        g.fillRect(50, 50, jugador1.getVida() * 2, 30);
-
-        g.setColor(Color.BLUE);
-        g.fillRect(1050, 50, jugador2.getVida() * 2, 30);
 
         if (estadoJuego == FIN) {
             g.setColor(Color.WHITE);
@@ -228,8 +254,13 @@ public class PanelJuego extends JPanel {
                 g.drawString("GANA JUGADOR 1", 500, 500);
             }
 
+            g.setFont(new Font("Arial", Font.BOLD, 30));
+            g.drawString("Tiempo final: " + tiempoPartida + " segundos", 520, 560);
+            g.drawString(nombreJugador1 + ": " + puntajeJugador1 + " puntos", 520, 610);
+            g.drawString(nombreJugador2 + ": " + puntajeJugador2 + " puntos", 520, 660);
+
             g.setFont(new Font("Arial", Font.BOLD, 35));
-            g.drawString("Presiona ENTER para reiniciar", 500, 580);
+            g.drawString("Presiona ENTER para reiniciar", 500, 730);
         }
 
 
