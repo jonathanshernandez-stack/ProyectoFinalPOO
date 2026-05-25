@@ -23,6 +23,9 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
     public boolean poder;
     public boolean poder2;
 
+    public boolean tecla1;
+    public boolean tecla2;
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -32,6 +35,14 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
     public void keyPressed(KeyEvent e) {
 
         int codigo = e.getKeyCode();  //Convierte la tecla en un codigo numerico
+
+        if (codigo == KeyEvent.VK_1) {
+            tecla1 = true;
+        }
+
+        if (codigo == KeyEvent.VK_2) {
+            tecla2 = true;
+        }
 
         if (codigo == KeyEvent.VK_ENTER) {
             enter = true;
@@ -94,6 +105,14 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
     public void keyReleased(KeyEvent e) {
 
         int codigo = e.getKeyCode();
+
+        if (codigo == KeyEvent.VK_1) {
+            tecla1 = false;
+        }
+
+        if (codigo == KeyEvent.VK_2) {
+            tecla2 = false;
+        }
 
         if (codigo == KeyEvent.VK_ENTER) {
             enter = false;

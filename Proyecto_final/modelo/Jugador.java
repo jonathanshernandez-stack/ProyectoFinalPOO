@@ -356,5 +356,24 @@ public class Jugador {
         }
     }
 
+    public void reiniciar(int xInicial, int yInicial) {
+        x = xInicial;
+        y = yInicial;
+
+        vida = 200;
+
+        direccion = "abajo";
+
+        mostrarGolpe = false;
+        tiempoGolpe = 0;
+
+        empujeX = 0;
+        empujeY = 0;
+
+        ataqueActual = null;
+        poderEspecial = null;
+
+        hurtbox.setPosicion(x, y);
+    }
 
 }

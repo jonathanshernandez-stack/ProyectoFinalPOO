@@ -14,9 +14,17 @@ public class PanelJuego extends JPanel {
     final int altoPantalla = 1000;
 
     public static final int MENU = 0; //Estado del menú (0)
-    public static final int JUGANDO = 1; //Estado del juego (1)
-    public static final int FIN = 2;
+    public static final int SELECCION_MODO = 1;
+    public static final int JUGANDO = 2; //Estado del juego (1)
+    public static final int FIN = 3;
+
+
     int estadoJuego = MENU;  //Dice al panel que inicie en el menú
+
+    boolean contraPC = false;
+
+    String nombreJugador1 = "Jugador 1";
+    String nombreJugador2 = "Jugador 2";
 
 
     //Guardar logica del juego
@@ -58,6 +66,13 @@ public class PanelJuego extends JPanel {
         hiloJuego.start();
     }
 
+    public void reiniciarPartida() {
+        jugador1.reiniciar(200, 500);
+        jugador2.reiniciar(1200, 500);
+
+        estadoJuego = JUGANDO;
+    }
+
     public void update () { //consulta estados al teclado
 
          /*if (teclado.arriba) {
@@ -77,7 +92,41 @@ public class PanelJuego extends JPanel {
         }*/
 
         if (estadoJuego == MENU) {
-            if (teclado.enter) {  //Revisa evento "enter" para iniciar el juego
+            if (teclado.enter) {
+                estadoJuego = SELECCION_MODO;
+            }
+        }
+
+        if (estadoJuego == SELECCION_MODO) {
+
+            if (teclado.tecla1) {
+                contraPC = true;
+
+                nombreJugador1 = JOptionPane.showInputDialog(this, "Nombre del jugador 1:");
+
+                if (nombreJugador1 == null || nombreJugador1.isEmpty()) {
+                    nombreJugador1 = "Jugador 1";
+                }
+
+                nombreJugador2 = "CPU";
+
+                estadoJuego = JUGANDO;
+            }
+
+            if (teclado.tecla2) {
+                contraPC = false;
+
+                nombreJugador1 = JOptionPane.showInputDialog(this, "Nombre del jugador 1:");
+                nombreJugador2 = JOptionPane.showInputDialog(this, "Nombre del jugador 2:");
+
+                if (nombreJugador1 == null || nombreJugador1.isEmpty()) {
+                    nombreJugador1 = "Jugador 1";
+                }
+
+                if (nombreJugador2 == null || nombreJugador2.isEmpty()) {
+                    nombreJugador2 = "Jugador 2";
+                }
+
                 estadoJuego = JUGANDO;
             }
         }
@@ -92,8 +141,20 @@ public class PanelJuego extends JPanel {
             jugador2.verificarPoder(jugador1);
         }
 
-        if (jugador1.getVida() <= 0 || jugador2.getVida() <= 0) {  //Verificar ganador
+       /* if (jugador1.getVida() <= 0 || jugador2.getVida() <= 0) {  //Verificar ganador
             estadoJuego = FIN;
+        }*/
+
+        if (estadoJuego == JUGANDO) {
+            if (jugador1.getVida() <= 0 || jugador2.getVida() <= 0) {
+                estadoJuego = FIN;
+            }
+        }
+
+        if (estadoJuego == FIN) {
+            if (teclado.enter) {
+                reiniciarPartida();
+            }
         }
     }
 
@@ -107,6 +168,20 @@ public class PanelJuego extends JPanel {
             menu.draw(g);
         }
 
+        //Se dibujan los apartados de nombres y desicion de uno o dos jugadores
+        if (estadoJuego == SELECCION_MODO) {
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, anchoPantalla, altoPantalla);
+
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 60));
+            g.drawString("SELECCIONA MODO DE JUEGO", 320, 250);
+
+            g.setFont(new Font("Arial", Font.BOLD, 40));
+            g.drawString("Presiona 1: Un jugador vs PC", 450, 400);
+            g.drawString("Presiona 2: Dos jugadores", 450, 480);
+        }
+
         if (estadoJuego == JUGANDO) {
 
             escenario.draw(g);
@@ -114,6 +189,13 @@ public class PanelJuego extends JPanel {
             jugador1.draw(g);
             jugador2.draw(g);
         }
+
+
+        //Mostrar nombre de jugador en pantalla (encima de la barra de vida)
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.BOLD, 25));
+        g.drawString(nombreJugador1, 50, 40);
+        g.drawString(nombreJugador2, 1050, 40);
 
         //Dibujar vidas en pantalla
         g.setColor(Color.RED);
@@ -131,6 +213,9 @@ public class PanelJuego extends JPanel {
             } else {
                 g.drawString("GANA JUGADOR 1", 500, 500);
             }
+
+            g.setFont(new Font("Arial", Font.BOLD, 35));
+            g.drawString("Presiona ENTER para reiniciar", 500, 580);
         }
 
 
