@@ -5,14 +5,7 @@ import java.awt.*;
 
 public class HUD {
 
-    public void draw(Graphics g,
-                     Jugador jugador1,
-                     Jugador jugador2,
-                     String nombreJugador1,
-                     String nombreJugador2,
-                     int tiempo,
-                     int puntajeJugador1,
-                     int puntajeJugador2) {
+    public void draw(Graphics g, Jugador jugador1, Jugador jugador2, String nombreJugador1, String nombreJugador2, int tiempo, int puntajeJugador1, int puntajeJugador2) {
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 25));

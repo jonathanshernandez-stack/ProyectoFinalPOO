@@ -4,6 +4,7 @@ package Proyecto_final.vista;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import Proyecto_final.controlador.GameLoop;
@@ -43,7 +44,9 @@ public class PanelJuego extends JPanel {
     Jugador jugador2 = new Jugador(teclado, anchoPantalla, altoPantalla, 1200, 500, 2);
 
     Menu menu = new Menu();
+    SeleccionModo seleccionModo = new SeleccionModo();
     Escenario escenario = new Escenario();
+    FinalModo finalModo = new FinalModo();
 
     HUD hud = new HUD();  //Head up Display, informacion en pantalla
 
@@ -239,22 +242,12 @@ public class PanelJuego extends JPanel {
         super.paintComponent(g);
 
         if (estadoJuego == MENU) {
-
             menu.draw(g);
         }
 
         //Se dibujan los apartados de nombres y desicion de uno o dos jugadores
         if (estadoJuego == SELECCION_MODO) {
-            g.setColor(Color.BLACK);
-            g.fillRect(0, 0, anchoPantalla, altoPantalla);
-
-            g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", Font.BOLD, 60));
-            g.drawString("SELECCIONA MODO DE JUEGO", 320, 250);
-
-            g.setFont(new Font("Arial", Font.BOLD, 40));
-            g.drawString("Presiona 1: Un jugador vs PC", 450, 400);
-            g.drawString("Presiona 2: Dos jugadores", 450, 480);
+           seleccionModo.draw(g);
         }
 
         if (estadoJuego == JUGANDO) {
@@ -268,40 +261,7 @@ public class PanelJuego extends JPanel {
         }
 
         if (estadoJuego == FIN) {
-            g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", Font.BOLD, 60));
-
-            if (jugador1.getVida() <= 0) {
-                g.drawString("GANA JUGADOR 2", 500, 500);
-            } else {
-                g.drawString("GANA JUGADOR 1", 500, 500);
-            }
-
-            g.setFont(new Font("Arial", Font.BOLD, 30));
-            g.drawString("Tiempo final: " + tiempoPartida + " segundos", 520, 560);
-            g.drawString(nombreJugador1 + ": " + puntajeJugador1 + " puntos", 520, 610);
-            g.drawString(nombreJugador2 + ": " + puntajeJugador2 + " puntos", 520, 660);
-
-            g.setFont(new Font("Arial", Font.BOLD, 35));
-            g.drawString("TOP 3 RANKING", 600, 720);
-
-            g.setFont(new Font("Arial", Font.BOLD, 25));
-
-            for (int i = 0; i < ranking.size() && i < 3; i++) {
-                RegistroRanking registro = ranking.get(i);
-
-                g.drawString(
-                        (i + 1) + ". " +
-                                registro.getNombre() + " - " +
-                                registro.getPuntaje() + " pts - " +
-                                registro.getTiempo() + "s - " +
-                                registro.getModo(),
-                        430,
-                        770 + (i * 35)
-                );
-            }
-
-            g.drawString("ENTER: reiniciar | ESC: volver al menu", 470, 910);
+            finalModo.draw(g, nombreJugador1, nombreJugador2, tiempoPartida, puntajeJugador1, puntajeJugador2, ranking, jugador1);
         }
 
 
