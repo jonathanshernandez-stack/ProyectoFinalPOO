@@ -307,6 +307,64 @@ public class Jugador {
         }
     }
 
+    //Asegurar que la cpu ataque al jugador 1
+
+    public void controlarCPU(Jugador enemigo) {
+
+        int distanciaX = enemigo.x - this.x;
+        int distanciaY = enemigo.y - this.y;
+
+        if (Math.abs(distanciaX) > 120) {
+            if (distanciaX > 0) {
+                x += velocidad;
+                direccion = "derecha";
+            } else {
+                x -= velocidad;
+                direccion = "izquierda";
+            }
+        }
+
+        if (Math.abs(distanciaY) > 40) {
+            if (distanciaY > 0) {
+                y += velocidad;
+                direccion = "abajo";
+            } else {
+                y -= velocidad;
+                direccion = "arriba";
+            }
+        }
+
+        if (Math.abs(distanciaX) < 140 && Math.abs(distanciaY) < 100) {
+            atacar();
+        }
+
+        if (Math.abs(distanciaX) > 350) {
+            lanzarPoder();
+        }
+
+        x += (int) empujeX;
+        y += (int) empujeY;
+
+        empujeX *= 0.8;
+        empujeY *= 0.8;
+
+        if (Math.abs(empujeX) < 1) {
+            empujeX = 0;
+        }
+
+        if (Math.abs(empujeY) < 1) {
+            empujeY = 0;
+        }
+
+        aplicarLimitesPantalla();
+
+        hurtbox.setPosicion(x, y);
+
+        if (poderEspecial != null && poderEspecial.isActivo()) {
+            poderEspecial.update();
+        }
+    }
+
     public void draw(Graphics g) {
 
         if (direccion.equals("arriba")) {

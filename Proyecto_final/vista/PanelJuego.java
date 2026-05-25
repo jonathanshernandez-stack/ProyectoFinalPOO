@@ -133,7 +133,11 @@ public class PanelJuego extends JPanel {
 
         if (estadoJuego == JUGANDO) {
             jugador1.update();
-            jugador2.update();
+            if (contraPC) {
+                jugador2.controlarCPU(jugador1);
+            } else {
+                jugador2.update();
+            }
 
             jugador1.verificarGolpe(jugador2);
             jugador2.verificarGolpe(jugador1);
