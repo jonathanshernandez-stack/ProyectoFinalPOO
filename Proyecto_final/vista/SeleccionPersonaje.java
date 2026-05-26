@@ -10,9 +10,9 @@ public class SeleccionPersonaje {
     private int indiceSeleccionado = 0; // Personaje donde está parado el selector
 
     public SeleccionPersonaje() {
-        imagenes[0] = new ImageIcon("/Users/Jonathan/Documents/poo/Proyecto_final/resources/SeleccionesP/Brakhan.png").getImage(); // Imagen Brakhan
-        imagenes[1] = new ImageIcon("/Users/Jonathan/Documents/poo/Proyecto_final/resources/SeleccionesP/Connor.png").getImage(); // Imagen Connor
-        imagenes[2] = new ImageIcon("/Users/Jonathan/Documents/poo/Proyecto_final/resources/SeleccionesP/Yepstorm.png").getImage(); // Imagen Yepstorm
+        imagenes[0] = new ImageIcon("Proyecto_final/resources/SeleccionesP/Brakhan.png").getImage(); // Imagen Brakhan
+        imagenes[1] = new ImageIcon("Proyecto_final/resources/SeleccionesP/Connor.png").getImage(); // Imagen Connor
+        imagenes[2] = new ImageIcon("Proyecto_final/resources/SeleccionesP/Yepstorm.png").getImage(); // Imagen Yepstorm
     }
 
     public void moverIzquierda() {

@@ -4,6 +4,8 @@ import java.awt.*;
 
 import Proyecto_final.controlador.InputManager;
 
+import javax.swing.*;
+
 public class Jugador {
 
     int x;
@@ -31,6 +33,18 @@ public class Jugador {
     private PoderEspecial poderEspecial;
 
     private boolean modoSolo = false;
+    private String personajeElegido = ""; // Guarda el nombre del personaje seleccionado
+    private Image imagenPersonaje; // Guarda la imagen que se dibujará en batalla
+
+    private Image spriteQuieto;
+    private Image spriteCorriendo;
+    private Image spritePunio;
+    private Image spritePatada;
+    private Image spritePiso;
+
+    private Image spriteActual;
+    private int tiempoAccion = 0;
+    private String accionVisual = "quieto";
 
     String direccion;
 
@@ -42,7 +56,7 @@ public class Jugador {
     //Atributos para aplicar gravedad
     private double velocidadY = 0;
     private double gravedad = 0.8;
-    private double fuerzaSalto = -18;
+    private double fuerzaSalto = -24; // Más negativo = salta más alto
     private boolean enSuelo = false;
     private int sueloY;
 
@@ -58,21 +72,46 @@ public class Jugador {
 
         velocidad = 5;
 
-        ancho = 50;
-        alto = 50;
+        ancho = 230; // Ancho real del cuerpo para golpes
+        alto = 500;  // Alto real del cuerpo para golpes
 
         sueloY = altoPantalla - alto; //Hacer que siempre comience en el suelo
         y = sueloY;
 
         direccion = "abajo";
 
-        hurtbox = new Hitbox(
-                x,
-                y,
-                ancho,
-                alto
-        );
+        hurtbox = new Hitbox(x, y, ancho, alto);
 
+    }
+
+    public void setPersonajeElegido(String personajeElegido) {
+        this.personajeElegido = personajeElegido;
+
+        if (personajeElegido.equals("Brakhan")) {
+            spriteQuieto = new ImageIcon("Proyecto_final/resources/Sprites/Brakhan/BR_PELEA.png").getImage();
+            spriteCorriendo = new ImageIcon("Proyecto_final/resources/Sprites/Brakhan/BR_CORRIENDO.png").getImage();
+            spritePunio = new ImageIcon("Proyecto_final/resources/Sprites/Brakhan/BR_TIRA_PUNO.png").getImage();
+            spritePatada = new ImageIcon("Proyecto_final/resources/Sprites/Brakhan/BR_TIRA_PATADA.png").getImage();
+            spritePiso = new ImageIcon("Proyecto_final/resources/Sprites/Brakhan/BR_PISO.png").getImage();
+        }
+
+        if (personajeElegido.equals("Yepstorm")) {
+            spriteQuieto = new ImageIcon("Proyecto_final/resources/Sprites/Yepstorm/DY_PELEA.png").getImage();
+            spriteCorriendo = new ImageIcon("Proyecto_final/resources/Sprites/Yepstorm/DY_CORRE.png").getImage();
+            spritePunio = new ImageIcon("Proyecto_final/resources/Sprites/Yepstorm/DY_TIRA_PUNO.png").getImage();
+            spritePatada = new ImageIcon("Proyecto_final/resources/Sprites/Yepstorm/DY_TIRA_PATADA.png").getImage();
+            spritePiso = new ImageIcon("Proyecto_final/resources/Sprites/Yepstorm/DY_PISO.png").getImage();
+        }
+
+        if (personajeElegido.equals("Connor")) {
+            spriteQuieto = new ImageIcon("Proyecto_final/resources/Sprites/Connor/CONNOR_PELEA.png").getImage();
+            spriteCorriendo = spriteQuieto;
+            spritePunio = new ImageIcon("Proyecto_final/resources/Sprites/Connor/CONNOR_PUNO.png").getImage();
+            spritePatada = spritePunio;
+            spritePiso = spriteQuieto;
+        }
+
+        spriteActual = spriteQuieto;
     }
 
     public void lanzarPoder() {
@@ -125,6 +164,8 @@ public class Jugador {
     }
 
     public void update() {
+
+            accionVisual = "quieto";
 
         boolean moverArriba;
         boolean moverAbajo;
@@ -195,11 +236,12 @@ public class Jugador {
 
         if (moverIzquierda) {
 
-            if (x > ancho ) {
+            if (x > 0 ) {  //Limite izquierdo
                 x -= velocidad;
             }
 
             direccion = "izquierda";
+            accionVisual = "corriendo";
         }
 
         if (moverDerecha) {
@@ -209,6 +251,7 @@ public class Jugador {
             }
 
             direccion = "derecha";
+            accionVisual = "corriendo";
         }
 
         velocidadY += gravedad;
@@ -220,10 +263,18 @@ public class Jugador {
             enSuelo = true;
         }
 
-        hurtbox.setPosicion(x, y); //Cuando el jugador se mueve, la hitbox debe perseguirlo
+        //hurtbox.setPosicion(x, y); //Cuando el jugador se mueve, la hitbox debe perseguirlo
 
-        if (botonAtacar) {
+      /*if (botonAtacar) {
             atacar();
+        }*/
+
+        if (botonAtacar && (ataqueActual == null || !ataqueActual.isActivo()) && tiempoAccion <= 0) {
+            atacar(); // Solo crea un golpe si no hay otro golpe activo
+        }
+
+        if (!botonAtacar && ataqueActual != null) {
+            ataqueActual.desactivar(); // Al soltar la tecla, se apaga la hitbox de daño
         }
 
         if (botonPoder) {
@@ -247,17 +298,36 @@ public class Jugador {
             empujeY = 0;
         }
 
+        //VOLVEMOS A VALIDAR SUELO DESPUES DEL EMPUJE
+        if (y >= sueloY) {
+            y = sueloY;        // Obliga a quedar exactamente en el piso
+            velocidadY = 0;    // Apaga caída
+            empujeY = 0;       // Apaga empuje vertical
+            enSuelo = true;    // Confirma que ya tocó suelo
+        }
+
         if (tiempoGolpe > 0) {
             tiempoGolpe--;
         } else {
             mostrarGolpe = false;
         }
 
-        //Activar poder especial
+        if (tiempoAccion > 0) {
+            tiempoAccion--; // Baja duración visual del golpe
+        } else {
+            accionVisual = "quieto"; // Vuelve a pose normal
 
+            if (ataqueActual != null) {
+                ataqueActual.desactivar(); // Evita que la caja azul quede haciendo daño
+            }
+        }
+
+        //Activar poder especial
         if (poderEspecial != null && poderEspecial.isActivo()) {
             poderEspecial.update();
         }
+
+        hurtbox.setPosicion(x, y); // Actualiza la caja después de corregir suelo
     }
 
     public void setModoSolo(boolean modoUnJugador) {
@@ -305,28 +375,24 @@ public class Jugador {
 
     public void atacar() {
 
+        accionVisual = "punio";
+        tiempoAccion = 15;
+
         if (direccion.equals("derecha")) {
 
             ataqueActual = new Ataque(
                     10,
-                    new Hitbox(x + ancho, y + 10, 40, 30)
-            );
+                    new Hitbox(x + ancho - 20, y + 70, 90, 80)            );
         }
 
         if (direccion.equals("izquierda")) {
 
-            ataqueActual = new Ataque(
-                    10,
-                    new Hitbox(x - 40, y + 10, 40, 30)
-            );
+            ataqueActual = new Ataque(10, new Hitbox(x - 70, y + 70, 90, 80)            );
         }
 
         if (direccion.equals("arriba")) {
 
-            ataqueActual = new Ataque(
-                    10,
-                    new Hitbox(x + 10, y - 40, 30, 40)
-            );
+            ataqueActual = new Ataque(10, new Hitbox(x + 10, y - 40, 30, 40));
         }
 
         if (direccion.equals("abajo")) {
@@ -373,15 +439,31 @@ public class Jugador {
             }
         }
 
-        if (Math.abs(distanciaY) > 40) {
+        // CPU: a veces salta, pero sin mover Y manualmente
+        if (y >= sueloY - 2 && Math.random() < 0.02) {
+            velocidadY = fuerzaSalto; // Salto real de la CPU
+            enSuelo = false;          // Ya no está en el piso
+        }
+
+        // Física vertical de la CPU: salto + gravedad
+        velocidadY += gravedad;      // La gravedad afecta el salto
+        y += (int) velocidadY;       // Mueve la CPU en Y
+
+        if (y >= sueloY) {
+            y = sueloY;              // Vuelve al suelo exacto
+            velocidadY = 0;          // Frena caída
+            enSuelo = true;          // Puede saltar otra vez
+        }
+
+       /* if (Math.abs(distanciaY) > 40) {
             if (distanciaY > 0) {
-                y += velocidad;
+                y += velocidad;  //Hace que la cpu flote y caiga desalineada, por eso se eliminó
                 direccion = "abajo";
             } else {
                 y -= velocidad;
                 direccion = "arriba";
             }
-        }
+        } */
 
         if (Math.abs(distanciaX) < 140 && Math.abs(distanciaY) < 100) {
             atacar();
@@ -407,11 +489,11 @@ public class Jugador {
 
         aplicarLimitesPantalla();
 
-        hurtbox.setPosicion(x, y);
-
         if (poderEspecial != null && poderEspecial.isActivo()) {
             poderEspecial.update();
         }
+
+        hurtbox.setPosicion(x, y);
     }
 
     public void draw(Graphics g) {
@@ -432,11 +514,38 @@ public class Jugador {
             g.setColor(Color.YELLOW);
         }
 
-        g.fillRect(x, y, ancho, alto);
+        Image spriteActual = spriteQuieto; // Por defecto está quieto  /////////////////////////
+
+        if (vida <= 0) {
+            spriteActual = spritePiso; // Si perdió, se ve en el piso
+        } else if (accionVisual.equals("punio") && tiempoAccion > 0) {
+            spriteActual = spritePunio; // Si atacó, muestra puño unos frames
+        } else if (accionVisual.equals("corriendo")) {
+            spriteActual = spriteCorriendo; // Si se mueve, muestra corriendo
+        }
+
+        Graphics2D g2 = (Graphics2D) g;  /////////////////////////////
+
+        int spriteAncho = 500; //Ancho, alto y posicion de imagen sobre la caja
+        int spriteAlto = 700;
+        int spriteX = x + (ancho / 2) - (spriteAncho / 2);
+        int spriteY = y + alto - spriteAlto;
+
+        if (spriteActual != null) {
+
+            if (direccion.equals("izquierda")) {
+                g2.drawImage(spriteActual, spriteX + spriteAncho, spriteY, -spriteAncho, spriteAlto, null);
+            } else {
+                g2.drawImage(spriteActual, spriteX, spriteY, spriteAncho, spriteAlto, null);
+            }
+
+        } else {
+            g.fillRect(x, y, ancho, alto);
+        }
 
         g.setColor(Color.RED);   //color de hurtbox
 
-        g.drawRect(x, y, ancho, alto);
+        g.drawRect(x, y, ancho, alto); //Hitbox para colisiones, poderes y empujes
 
         if (ataqueActual != null && ataqueActual.isActivo()) {
 

@@ -8,13 +8,30 @@ import java.io.IOException;
 
 public class Instrucciones { // Clase visual, NO JFrame, porque se dibuja dentro de PanelJuego
 
+    private BufferedImage fondo;
+
+    public Instrucciones() {
+        try {
+            fondo = ImageIO.read(new File("Proyecto_final/resources/escenarios/instrucciones.jpeg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void draw(Graphics g, int anchoPantalla, int altoPantalla) { // Método que dibuja instrucciones
 
         Graphics2D g2 = (Graphics2D) g;
 
+        if (fondo != null) {
+            g2.drawImage(fondo, 0, 0, anchoPantalla, 1000, null);
+        } else {
+            g2.setColor(Color.BLACK);
+            g2.fillRect(0, 0, 1500, 1000);
+        }
 
-        g.setColor(Color.BLACK); // Selecciona color negro
-        g.fillRect(0, 0, anchoPantalla, altoPantalla); // Pinta todo el fondo negro
+
+        g2.setColor(new Color(0, 0, 0, 170));
+        g2.fillRect(0, 0, 1500, 1000);
 
         g.setColor(Color.WHITE); // Cambia color a blanco
         g.setFont(new Font("Arial", Font.BOLD, 60)); // Fuente grande y negrita

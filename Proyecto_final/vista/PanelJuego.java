@@ -102,6 +102,9 @@ public class PanelJuego extends JPanel {
         jugador1.reiniciar(200, 500);
         jugador2.reiniciar(1200, 500);
 
+        jugador1.setPersonajeElegido(personajeJugador1); // Pone en batalla el personaje elegido por J1
+        jugador2.setPersonajeElegido(personajeJugador2); // Pone en batalla el personaje elegido por J2 o CPU
+
         puntajeJugador1 = 0;
         puntajeJugador2 = 0;
 
