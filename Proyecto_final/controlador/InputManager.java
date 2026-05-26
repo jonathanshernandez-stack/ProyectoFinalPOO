@@ -25,8 +25,11 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
 
     public boolean tecla1;
     public boolean tecla2;
+    public boolean tecla3;
 
     public boolean escape;
+
+    public boolean teclaI;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -44,6 +47,10 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
 
         if (codigo == KeyEvent.VK_2) {
             tecla2 = true;
+        }
+
+        if (codigo == KeyEvent.VK_3) {
+            tecla3 = true;
         }
 
         if (codigo == KeyEvent.VK_ENTER) {
@@ -106,6 +113,11 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
             escape = true;
         }
 
+        //Seleccion_Personaje
+        if (codigo == KeyEvent.VK_I) {
+            teclaI = true;
+        }
+
     }
 
     @Override
@@ -119,6 +131,10 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
 
         if (codigo == KeyEvent.VK_2) {
             tecla2 = false;
+        }
+
+        if (codigo == KeyEvent.VK_3) {
+            tecla3 = false;
         }
 
         if (codigo == KeyEvent.VK_ENTER) {
@@ -176,6 +192,10 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
 
         if (codigo == KeyEvent.VK_ESCAPE) {
             escape = false;
+        }
+
+        if (codigo == KeyEvent.VK_I) {
+            teclaI = false;
         }
 
     }

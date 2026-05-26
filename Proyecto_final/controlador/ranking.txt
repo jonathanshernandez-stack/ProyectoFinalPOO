@@ -72,3 +72,9 @@ d;0;4;1 Jugador
 CPU;2000;4;1 Jugador
 r;0;4;1 Jugador
 CPU;2000;4;1 Jugador
+f;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;5;1 Jugador
+CPU;2000;5;1 Jugador
+Jugador 1;0;66;1 Jugador
+CPU;2000;66;1 Jugador

@@ -19,9 +19,10 @@ public class PanelJuego extends JPanel {
     final int altoPantalla = 1000;
 
     public static final int MENU = 0; //Estado del menú (0)
-    public static final int SELECCION_MODO = 1;
-    public static final int JUGANDO = 2; //Estado del juego (2)
-    public static final int FIN = 3;
+    public static final int SELECCION_MODO = 1; //Estado de seleccion
+    public static final int SELECCION_PERSONAJE = 2;
+    public static final int JUGANDO = 3; //Estado del juego (2)
+    public static final int FIN = 4; //Estado final
 
 
     int estadoJuego = MENU;  //Dice al panel que inicie en el menú
@@ -31,6 +32,11 @@ public class PanelJuego extends JPanel {
     String nombreJugador1 = "Jugador 1";
     String nombreJugador2 = "Jugador 2";
 
+
+    String personajeJugador1 = ""; ////////////Seleccion de personajes en otro apartado
+    String personajeJugador2 = "";
+
+    int turnoSeleccion = 1;
 
     //Guardar logica del juego
     GameLoop gameLoop;
@@ -45,6 +51,7 @@ public class PanelJuego extends JPanel {
 
     Menu menu = new Menu();
     SeleccionModo seleccionModo = new SeleccionModo();
+    SeleccionPersonaje seleccionPersonaje = new SeleccionPersonaje();
     Escenario escenario = new Escenario();
     FinalModo finalModo = new FinalModo();
 
@@ -106,6 +113,65 @@ public class PanelJuego extends JPanel {
         estadoJuego = JUGANDO;
     }
 
+    //Controla la selección de personajes
+    public void seleccionarPersonaje(String personajeElegido) {
+
+        //Si el juego es contra CPU
+        if (contraPC) {
+
+            personajeJugador1 = personajeElegido;
+
+            //La CPU escoge automáticamente otro personaje
+            personajeJugador2 = elegirPersonajeCPU(personajeJugador1);
+
+            reiniciarPartida(); //inicia pelea
+
+            estadoJuego = JUGANDO;
+
+            return;
+        }
+
+        //Turno del jugador 1
+        if (turnoSeleccion == 1) {
+
+            personajeJugador1 = personajeElegido;
+
+            turnoSeleccion = 2; //ahora elige jugador 2
+
+            return;
+        }
+
+        //Turno jugador 2
+        personajeJugador2 = personajeElegido;
+
+        reiniciarPartida();
+
+        estadoJuego = JUGANDO;
+    }
+
+    //La CPU elige un personaje aleatorio diferente
+    public String elegirPersonajeCPU(String personajeJugador) {
+
+        String[] personajes = {"Brakhan", "Connor", "Yepstorm"};
+
+        ArrayList<String> opcionesCPU = new ArrayList<>();
+
+        //Guardar personajes disponibles
+        for (String personaje : personajes) {
+
+            if (!personaje.equals(personajeJugador)) {
+
+                opcionesCPU.add(personaje);
+            }
+        }
+
+        //Número aleatorio
+        int posicionAleatoria =
+                (int)(Math.random() * opcionesCPU.size());
+
+        return opcionesCPU.get(posicionAleatoria);
+    }
+
     public void update () { //consulta estados al teclado
 
         if (teclado.escape) {
@@ -122,6 +188,32 @@ public class PanelJuego extends JPanel {
         if (estadoJuego == SELECCION_MODO) {
 
             if (teclado.tecla1) {
+
+                contraPC = true; //el juego será contra la computadora
+
+                nombreJugador1 = JOptionPane.showInputDialog(this,
+                        "Nombre del jugador 1: ");
+
+                //si el jugador no escribe nada
+                if (nombreJugador1 == null || nombreJugador1.isEmpty()) {
+                    nombreJugador1 = "Jugador 1";
+                }
+
+                nombreJugador2 = "CPU";
+
+                jugador1.setModoSolo(true); //jugador humano
+                jugador2.setModoSolo(false); //CPU
+
+                turnoSeleccion = 1; //empieza eligiendo jugador 1
+
+                estadoJuego = SELECCION_PERSONAJE; //pasar a elegir personaje
+
+                teclado.tecla1 = false; //reiniciar tecla
+                return;
+            }
+
+
+           /* if (teclado.tecla1) {
                 contraPC = true;
 
                 nombreJugador1 = JOptionPane.showInputDialog(this, "Nombre del jugador 1:");
@@ -137,9 +229,33 @@ public class PanelJuego extends JPanel {
 
                 reiniciarPartida();
                 return;
-            }
+            }*/
 
             if (teclado.tecla2) {
+                contraPC = false;
+
+                nombreJugador1 = JOptionPane.showInputDialog(this, "Nombre del jugador 1:");
+                nombreJugador2 = JOptionPane.showInputDialog(this, "Nombre del jugador 2:");
+
+                if (nombreJugador1 == null || nombreJugador1.isEmpty()) {
+                    nombreJugador1 = "Jugador 1";
+                }
+
+                if (nombreJugador2 == null || nombreJugador2.isEmpty()) {
+                    nombreJugador2 = "Jugador 2";
+                }
+
+                jugador1.setModoSolo(false);
+                jugador2.setModoSolo(false);
+
+                turnoSeleccion = 1;
+                estadoJuego = SELECCION_PERSONAJE;
+
+                teclado.tecla2 = false;
+                return;
+            }
+
+           /* if (teclado.tecla2) {
                 contraPC = false;
 
                 nombreJugador1 = JOptionPane.showInputDialog(this, "Nombre del jugador 1:");
@@ -160,8 +276,31 @@ public class PanelJuego extends JPanel {
                 return;
 
 
+            }*/
+        }
+
+        //Pantalla selección de personajes
+        if (estadoJuego == SELECCION_PERSONAJE) {
+
+            if (teclado.izquierda2) { // Flecha izquierda mueve selección
+                seleccionPersonaje.moverIzquierda();
+                teclado.izquierda2 = false;
+                return;
+            }
+
+            if (teclado.derecha2) { // Flecha derecha mueve selección
+                seleccionPersonaje.moverDerecha();
+                teclado.derecha2 = false;
+                return;
+            }
+
+            if (teclado.enter) { // Enter confirma personaje
+                seleccionarPersonaje(seleccionPersonaje.getPersonajeSeleccionado());
+                teclado.enter = false;
+                return;
             }
         }
+
 
         if (estadoJuego == JUGANDO) {
             jugador1.update();
@@ -248,6 +387,11 @@ public class PanelJuego extends JPanel {
         //Se dibujan los apartados de nombres y desicion de uno o dos jugadores
         if (estadoJuego == SELECCION_MODO) {
            seleccionModo.draw(g);
+        }
+
+        //Pantalla selección personajes
+        if (estadoJuego == SELECCION_PERSONAJE) {
+            seleccionPersonaje.draw(g, anchoPantalla, altoPantalla, contraPC, turnoSeleccion);
         }
 
         if (estadoJuego == JUGANDO) {
