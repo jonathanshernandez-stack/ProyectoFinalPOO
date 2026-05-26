@@ -46,6 +46,9 @@ public class Jugador {
     private int tiempoAccion = 0;
     private String accionVisual = "quieto";
 
+    private int contadorRespiracion = 0; // Cuenta frames para animación idle
+    private int offsetRespiracion = 6; // Movimiento visual arriba/abajo
+
     String direccion;
 
     InputManager teclado;
@@ -59,6 +62,11 @@ public class Jugador {
     private double fuerzaSalto = -24; // Más negativo = salta más alto
     private boolean enSuelo = false;
     private int sueloY;
+
+    private int ajusteSpriteX = 0;    //UNICAMENTE PARA ACOMODAR SPRITES FACIL
+    private int ajusteSpriteY = 0;
+    private int ajusteSpriteAncho = 0;
+    private int ajusteSpriteAlto = 0;
 
     public Jugador(InputManager teclado, int anchoPantalla, int altoPantalla, int xInicial, int yInicial, int numeroJugador) {
 
@@ -109,6 +117,27 @@ public class Jugador {
             spritePunio = new ImageIcon("Proyecto_final/resources/Sprites/Connor/CONNOR_PUNO.png").getImage();
             spritePatada = spritePunio;
             spritePiso = spriteQuieto;
+        }
+
+        if (personajeElegido.equals("Brakhan")) {       //Ajustar sprites mas exactamente en sus hitboxes
+            ajusteSpriteX = 0;
+            ajusteSpriteY = -40;
+            ajusteSpriteAncho = 30;
+            ajusteSpriteAlto = 0;
+        }
+
+        if (personajeElegido.equals("Yepstorm")) {
+            ajusteSpriteX = 0;   // mueve visualmente a la izquierda
+            ajusteSpriteY = 10;    // baja los pies
+            ajusteSpriteAncho = 10;
+            ajusteSpriteAlto = 0;
+        }
+
+        if (personajeElegido.equals("Connor")) {
+            ajusteSpriteX = 0;
+            ajusteSpriteY = 0;
+            ajusteSpriteAncho = 0;
+            ajusteSpriteAlto = 0;
         }
 
         spriteActual = spriteQuieto;
@@ -165,7 +194,19 @@ public class Jugador {
 
     public void update() {
 
-            accionVisual = "quieto";
+        accionVisual = "quieto";
+
+        contadorRespiracion++; // Avanza frames de respiración
+
+        if (contadorRespiracion >= 30) { // Cada 30 frames cambia
+            contadorRespiracion = 0;
+
+            if (offsetRespiracion == 0) {
+                offsetRespiracion = 4; // Baja un poquito
+            } else {
+                offsetRespiracion = 0; // Vuelve arriba
+            }
+        }
 
         boolean moverArriba;
         boolean moverAbajo;
@@ -222,7 +263,7 @@ public class Jugador {
         if (moverArriba && enSuelo) {
             velocidadY = fuerzaSalto;
             enSuelo = false;
-            direccion = "arriba";
+            //direccion = "arriba";
         }
 
        /* if (moverAbajo) {
@@ -313,6 +354,14 @@ public class Jugador {
         }
 
         if (tiempoAccion > 0) {
+            tiempoAccion--; // Baja duración visual del golpe   //Ponemos este condicional para evitar que el sprite "corriendo" se elimine por el bloque comentado
+
+            if (tiempoAccion <= 0 && ataqueActual != null) {
+                ataqueActual.desactivar(); // Apaga daño al terminar ataque
+            }
+        }
+
+       /* if (tiempoAccion > 0) {                                       //////////////////////////////////////////////////
             tiempoAccion--; // Baja duración visual del golpe
         } else {
             accionVisual = "quieto"; // Vuelve a pose normal
@@ -320,7 +369,7 @@ public class Jugador {
             if (ataqueActual != null) {
                 ataqueActual.desactivar(); // Evita que la caja azul quede haciendo daño
             }
-        }
+        }*/
 
         //Activar poder especial
         if (poderEspecial != null && poderEspecial.isActivo()) {
@@ -526,10 +575,18 @@ public class Jugador {
 
         Graphics2D g2 = (Graphics2D) g;  /////////////////////////////
 
-        int spriteAncho = 500; //Ancho, alto y posicion de imagen sobre la caja
-        int spriteAlto = 700;
-        int spriteX = x + (ancho / 2) - (spriteAncho / 2);
-        int spriteY = y + alto - spriteAlto;
+        int spriteAncho = 500; // Tamaño visual del personaje
+        int spriteAlto = 700;  // Altura visual del personaje
+
+        //int spriteX = x + (ancho / 2) - (spriteAncho / 2); // Centra sprite sobre la caja roja
+        //int spriteY = y + alto - spriteAlto; // Pega los pies del sprite al piso de la caja
+
+        int spriteX = x - 130 + ajusteSpriteX;
+        int spriteY = y - 160 + ajusteSpriteY + offsetRespiracion;
+        int spriteW = spriteAncho + ajusteSpriteAncho;
+        int spriteH = spriteAlto + ajusteSpriteAlto;
+
+        spriteY += 25 + offsetRespiracion; // Baja visualmente el sprite sin mover la hitbox ahora con efecto de respiración
 
         if (spriteActual != null) {
 
@@ -549,17 +606,11 @@ public class Jugador {
 
         if (ataqueActual != null && ataqueActual.isActivo()) {
 
-            Rectangle r =
-                    ataqueActual.getHitbox().getBounds();
+            Rectangle r = ataqueActual.getHitbox().getBounds();
 
             g.setColor(Color.BLUE);
 
-            g.drawRect(
-                    r.x,
-                    r.y,
-                    r.width,
-                    r.height
-            );
+            g.drawRect(r.x, r.y, r.width, r.height);
         }
 
         if (mostrarGolpe) {
@@ -573,6 +624,7 @@ public class Jugador {
     }
 
     public void reiniciar(int xInicial, int yInicial) {
+
         x = xInicial;
         y = sueloY;
         velocidadY = 0;
@@ -580,7 +632,11 @@ public class Jugador {
 
         vida = 200;
 
-        direccion = "abajo";
+        if (numeroJugador == 1) {
+            direccion = "derecha"; // Jugador 1 mira hacia el rival
+        } else {
+            direccion = "izquierda"; // Jugador 2/CPU mira hacia el rival
+        }
 
         mostrarGolpe = false;
         tiempoGolpe = 0;

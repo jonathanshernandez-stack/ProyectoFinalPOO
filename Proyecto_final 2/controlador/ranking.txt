@@ -258,3 +258,13 @@ Jugador 1;0;3;1 Jugador
 CPU;2000;3;1 Jugador
 Jugador 1;0;4;1 Jugador
 CPU;2000;4;1 Jugador
+Jugador 1;0;3;1 Jugador
+CPU;2000;3;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;3;1 Jugador
+CPU;2000;3;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador

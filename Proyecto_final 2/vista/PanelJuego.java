@@ -31,6 +31,9 @@ public class PanelJuego extends JPanel {
 
     boolean contraPC = false;
 
+    long tiempoMuerte = 0;  //Para visualizar muerto
+    boolean esperandoPantallaFinal = false;
+
     String nombreJugador1 = "Jugador 1";
     String nombreJugador2 = "Jugador 2";
 
@@ -99,8 +102,8 @@ public class PanelJuego extends JPanel {
     }
 
     public void reiniciarPartida() {
-        jugador1.reiniciar(200, 500);
-        jugador2.reiniciar(1200, 500);
+        jugador1.reiniciar(50, 500);
+        jugador2.reiniciar(1210, 500);
 
         jugador1.setPersonajeElegido(personajeJugador1); // Pone en batalla el personaje elegido por J1
         jugador2.setPersonajeElegido(personajeJugador2); // Pone en batalla el personaje elegido por J2 o CPU
@@ -360,27 +363,35 @@ public class PanelJuego extends JPanel {
             estadoJuego = FIN;
         }*/
 
-        if (estadoJuego == JUGANDO) {
+        if (estadoJuego == JUGANDO) {   //Deja visualizar muerte despues de 3 segundos pero sigue guardando ranking
+
             if (jugador1.getVida() <= 0 || jugador2.getVida() <= 0) {
 
-                if (!rankingGuardado) { //Evita que se guarde 60 veces por segundo
-
-                    String modo = contraPC ? "1 Jugador" : "2 Jugadores";
-
-                    gestorRanking.guardarRegistro(
-                            new RegistroRanking(nombreJugador1, puntajeJugador1, tiempoPartida, modo)
-                    );
-
-                    gestorRanking.guardarRegistro(
-                            new RegistroRanking(nombreJugador2, puntajeJugador2, tiempoPartida, modo)
-                    );
-
-                    ranking = gestorRanking.leerRanking();
-
-                    rankingGuardado = true;
+                if (!esperandoPantallaFinal) {
+                    esperandoPantallaFinal = true;
+                    tiempoMuerte = System.currentTimeMillis(); // empieza contador de 3 segundos
                 }
 
-                estadoJuego = FIN;
+                if (System.currentTimeMillis() - tiempoMuerte >= 3000) {
+
+                    if (!rankingGuardado) {
+                        String modo = contraPC ? "1 Jugador" : "2 Jugadores";
+
+                        gestorRanking.guardarRegistro(
+                                new RegistroRanking(nombreJugador1, puntajeJugador1, tiempoPartida, modo)
+                        );
+
+                        gestorRanking.guardarRegistro(
+                                new RegistroRanking(nombreJugador2, puntajeJugador2, tiempoPartida, modo)
+                        );
+
+                        ranking = gestorRanking.leerRanking();
+
+                        rankingGuardado = true;
+                    }
+
+                    estadoJuego = FIN;
+                }
             }
         }
 
