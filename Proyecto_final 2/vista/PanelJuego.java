@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import Proyecto_final.controlador.SoundManager;
 
 import Proyecto_final.controlador.GameLoop;
 import Proyecto_final.controlador.GestorRanking;
@@ -102,7 +103,7 @@ public class PanelJuego extends JPanel {
     }
 
     public void reiniciarPartida() {
-        jugador1.reiniciar(50, 500);
+        jugador1.reiniciar(80, 500);
         jugador2.reiniciar(1210, 500);
 
         jugador1.setPersonajeElegido(personajeJugador1); // Pone en batalla el personaje elegido por J1
@@ -118,6 +119,9 @@ public class PanelJuego extends JPanel {
         tiempoPartida = 0;
 
         rankingGuardado = false;
+
+        SoundManager.reproducir("Proyecto_final/resources/Sonidos/inicio.wav");
+        SoundManager.reproducirMusica("Proyecto_final/resources/Sonidos/techno.wav");
 
         estadoJuego = JUGANDO;
     }
@@ -328,7 +332,6 @@ public class PanelJuego extends JPanel {
             }
         }
 
-
         if (estadoJuego == JUGANDO) {
             jugador1.update();
             if (contraPC) {
@@ -389,6 +392,10 @@ public class PanelJuego extends JPanel {
 
                         rankingGuardado = true;
                     }
+
+                    SoundManager.detenerMusica();
+
+                    SoundManager.reproducir("Proyecto_final/resources/Sonidos/fin_juego.wav");
 
                     estadoJuego = FIN;
                 }

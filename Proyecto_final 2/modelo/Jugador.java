@@ -6,6 +6,8 @@ import Proyecto_final.controlador.InputManager;
 
 import javax.swing.*;
 
+import Proyecto_final.controlador.SoundManager;
+
 public class Jugador {
 
     int x;
@@ -39,8 +41,9 @@ public class Jugador {
     private Image spriteQuieto;
     private Image spriteCorriendo;
     private Image spritePunio;
-    private Image spritePatada;
+    private Image spriteSalto;
     private Image spritePiso;
+    private Image spriteGolpeado;
 
     private Image spriteActual;
     private int tiempoAccion = 0;
@@ -99,45 +102,47 @@ public class Jugador {
             spriteQuieto = new ImageIcon("Proyecto_final/resources/Sprites/Brakhan/BR_PELEA.png").getImage();
             spriteCorriendo = new ImageIcon("Proyecto_final/resources/Sprites/Brakhan/BR_CORRIENDO.png").getImage();
             spritePunio = new ImageIcon("Proyecto_final/resources/Sprites/Brakhan/BR_TIRA_PUNO.png").getImage();
-            spritePatada = new ImageIcon("Proyecto_final/resources/Sprites/Brakhan/BR_TIRA_PATADA.png").getImage();
+            spriteSalto = new ImageIcon("Proyecto_final/resources/Sprites/Brakhan/BR_SALTO.png").getImage();
             spritePiso = new ImageIcon("Proyecto_final/resources/Sprites/Brakhan/BR_PISO.png").getImage();
+            spriteGolpeado = spritePiso;
         }
 
         if (personajeElegido.equals("Yepstorm")) {
             spriteQuieto = new ImageIcon("Proyecto_final/resources/Sprites/Yepstorm/DY_PELEA.png").getImage();
             spriteCorriendo = new ImageIcon("Proyecto_final/resources/Sprites/Yepstorm/DY_CORRE.png").getImage();
             spritePunio = new ImageIcon("Proyecto_final/resources/Sprites/Yepstorm/DY_TIRA_PUNO.png").getImage();
-            spritePatada = new ImageIcon("Proyecto_final/resources/Sprites/Yepstorm/DY_TIRA_PATADA.png").getImage();
+            spriteSalto = new ImageIcon("Proyecto_final/resources/Sprites/Yepstorm/DY_TIRA_PATADA.png").getImage();
             spritePiso = new ImageIcon("Proyecto_final/resources/Sprites/Yepstorm/DY_PISO.png").getImage();
         }
 
         if (personajeElegido.equals("Connor")) {
-            spriteQuieto = new ImageIcon("Proyecto_final/resources/Sprites/Connor/CONNOR_PELEA.png").getImage();
-            spriteCorriendo = spriteQuieto;
+            spriteQuieto = new ImageIcon("Proyecto_final/resources/Sprites/Connor/CONNOR_POSE.png").getImage();
+            spriteCorriendo = new ImageIcon("Proyecto_final/resources/Sprites/Connor/CONNOR_POSE.png").getImage();
             spritePunio = new ImageIcon("Proyecto_final/resources/Sprites/Connor/CONNOR_PUNO.png").getImage();
-            spritePatada = spritePunio;
-            spritePiso = spriteQuieto;
+            spriteSalto = new ImageIcon("Proyecto_final/resources/Sprites/Connor/CONNOR_SALTO.png").getImage();
+            spritePiso = new ImageIcon("Proyecto_final/resources/Sprites/Connor/CONNOR_PISO.png").getImage();
+            spriteGolpeado = new ImageIcon("Proyecto_final/resources/Sprites/Connor/CONNOR_GOLPEADO.png").getImage();
         }
 
         if (personajeElegido.equals("Brakhan")) {       //Ajustar sprites mas exactamente en sus hitboxes
-            ajusteSpriteX = 0;
-            ajusteSpriteY = -40;
-            ajusteSpriteAncho = 30;
-            ajusteSpriteAlto = 0;
+            ajusteSpriteX = 15;
+            ajusteSpriteY = -67;
+            ajusteSpriteAncho = -30;
+            ajusteSpriteAlto = 28;
         }
 
         if (personajeElegido.equals("Yepstorm")) {
             ajusteSpriteX = 0;   // mueve visualmente a la izquierda
-            ajusteSpriteY = 10;    // baja los pies
-            ajusteSpriteAncho = 10;
+            ajusteSpriteY = -2;    // baja los pies
+            ajusteSpriteAncho = 0;
             ajusteSpriteAlto = 0;
         }
 
         if (personajeElegido.equals("Connor")) {
-            ajusteSpriteX = 0;
-            ajusteSpriteY = 0;
-            ajusteSpriteAncho = 0;
-            ajusteSpriteAlto = 0;
+            ajusteSpriteX = -300;      // lo corre para que el aumento quede centrado
+            ajusteSpriteY = -40;       // mantiene altura
+            ajusteSpriteAncho = 600;   // lo vuelve más ancho
+            ajusteSpriteAlto = 0;      // no altera altura
         }
 
         spriteActual = spriteQuieto;
@@ -166,6 +171,7 @@ public class Jugador {
             }
 
             poderEspecial = new PoderEspecial(poderX, poderY, direccion);
+            SoundManager.reproducir("Proyecto_final/resources/Sonidos/poder.wav");
         }
     }
 
@@ -263,6 +269,7 @@ public class Jugador {
         if (moverArriba && enSuelo) {
             velocidadY = fuerzaSalto;
             enSuelo = false;
+            SoundManager.reproducir("Proyecto_final/resources/Sonidos/saltar.wav");
             //direccion = "arriba";
         }
 
@@ -418,6 +425,7 @@ public class Jugador {
                 ataqueActual.desactivar();
 
                 System.out.println("GOLPE!");
+                SoundManager.reproducir("Proyecto_final/resources/Sonidos/golpe.wav");
             }
         }
     }
@@ -565,12 +573,16 @@ public class Jugador {
 
         Image spriteActual = spriteQuieto; // Por defecto está quieto  /////////////////////////
 
-        if (vida <= 0) {
-            spriteActual = spritePiso; // Si perdió, se ve en el piso
+        if (vida <= 0) {        /// ///////
+            spriteActual = spritePiso;
+        } else if (mostrarGolpe && spriteGolpeado != null) {
+            spriteActual = spriteGolpeado;
+        } else if (!enSuelo && spriteSalto != null) {
+            spriteActual = spriteSalto;
         } else if (accionVisual.equals("punio") && tiempoAccion > 0) {
-            spriteActual = spritePunio; // Si atacó, muestra puño unos frames
+            spriteActual = spritePunio;
         } else if (accionVisual.equals("corriendo")) {
-            spriteActual = spriteCorriendo; // Si se mueve, muestra corriendo
+            spriteActual = spriteCorriendo;
         }
 
         Graphics2D g2 = (Graphics2D) g;  /////////////////////////////
@@ -591,9 +603,9 @@ public class Jugador {
         if (spriteActual != null) {
 
             if (direccion.equals("izquierda")) {
-                g2.drawImage(spriteActual, spriteX + spriteAncho, spriteY, -spriteAncho, spriteAlto, null);
+                g2.drawImage(spriteActual, spriteX + spriteW, spriteY, -spriteW, spriteH, null);
             } else {
-                g2.drawImage(spriteActual, spriteX, spriteY, spriteAncho, spriteAlto, null);
+                g2.drawImage(spriteActual, spriteX, spriteY, spriteW, spriteH, null);
             }
 
         } else {

@@ -268,3 +268,35 @@ Jugador 1;0;4;1 Jugador
 CPU;2000;4;1 Jugador
 Jugador 1;0;4;1 Jugador
 CPU;2000;4;1 Jugador
+Jugador 1;0;7;1 Jugador
+CPU;2000;7;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;7;1 Jugador
+CPU;2000;7;1 Jugador
+Jugador 1;1000;9;1 Jugador
+CPU;2000;9;1 Jugador
+Jugador 1;800;8;1 Jugador
+CPU;2000;8;1 Jugador
+Jugador 1;0;3;1 Jugador
+CPU;2000;3;1 Jugador
+Jugador 1;400;5;1 Jugador
+CPU;2000;5;1 Jugador
+Jugador 1;300;213;2 Jugadores
+Jugador 2;2000;213;2 Jugadores
+Jugador 1;0;6;1 Jugador
+CPU;2000;6;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;3;1 Jugador
+CPU;2000;3;1 Jugador
+Jugador 1;2000;5;1 Jugador
+CPU;1800;5;1 Jugador
+Jugador 1;0;5;1 Jugador
+CPU;2000;5;1 Jugador
+Jugador 1;2000;4;1 Jugador
+CPU;1300;4;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;3;1 Jugador
+CPU;2000;3;1 Jugador
