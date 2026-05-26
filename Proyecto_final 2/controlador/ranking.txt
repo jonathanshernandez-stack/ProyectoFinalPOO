@@ -78,3 +78,11 @@ Jugador 1;0;5;1 Jugador
 CPU;2000;5;1 Jugador
 Jugador 1;0;66;1 Jugador
 CPU;2000;66;1 Jugador
+Jugador 1;0;5;1 Jugador
+CPU;2000;5;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;5;1 Jugador
+CPU;2000;5;1 Jugador
+Jugador 1;0;10;1 Jugador
+CPU;2000;10;1 Jugador

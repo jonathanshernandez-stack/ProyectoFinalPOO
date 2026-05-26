@@ -13,7 +13,7 @@ public class Menu {
 
     public Menu() {
         try {
-            fondo = ImageIO.read(new File("Proyecto_final/resources/escenarios/fondo.png"));
+            fondo = ImageIO.read(new File("Proyecto_final/resources/escenarios/fondo4.jpeg"));
            //logoUAM = ImageIO.read(new File("/Users/Jonathan/Documents/poo/Proyecto_final/resources/Logos/logo_uam.png"));
         } catch (IOException e) {
             e.printStackTrace();

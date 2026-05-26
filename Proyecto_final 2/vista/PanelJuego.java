@@ -23,6 +23,8 @@ public class PanelJuego extends JPanel {
     public static final int SELECCION_PERSONAJE = 2;
     public static final int JUGANDO = 3; //Estado del juego (2)
     public static final int FIN = 4; //Estado final
+    public static final int INSTRUCCIONES = 5;
+
 
 
     int estadoJuego = MENU;  //Dice al panel que inicie en el menú
@@ -54,6 +56,7 @@ public class PanelJuego extends JPanel {
     SeleccionPersonaje seleccionPersonaje = new SeleccionPersonaje();
     Escenario escenario = new Escenario();
     FinalModo finalModo = new FinalModo();
+    Instrucciones instrucciones = new Instrucciones();
 
     HUD hud = new HUD();  //Head up Display, informacion en pantalla
 
@@ -180,8 +183,26 @@ public class PanelJuego extends JPanel {
         }
 
         if (estadoJuego == MENU) {
-            if (teclado.enter) {
-                estadoJuego = SELECCION_MODO;
+
+            if (teclado.teclaI) { // Si presionas I en el menú
+                estadoJuego = INSTRUCCIONES; // Muestra instrucciones
+                teclado.teclaI = false; // Apaga la tecla
+                return; // No deja que siga revisando más estados
+            }
+
+            if (teclado.enter) { // Si presionas ENTER
+                estadoJuego = SELECCION_MODO; // Sigue normal a selección de modo
+                teclado.enter = false; // Apaga enter
+                return;
+            }
+        }
+
+        if (estadoJuego == INSTRUCCIONES) {
+
+            if (teclado.escape) { // ESC vuelve al menú
+                estadoJuego = MENU;
+                teclado.escape = false;
+                return;
             }
         }
 
@@ -382,6 +403,10 @@ public class PanelJuego extends JPanel {
 
         if (estadoJuego == MENU) {
             menu.draw(g);
+        }
+
+        if (estadoJuego == INSTRUCCIONES) {
+            instrucciones.draw(g, anchoPantalla, altoPantalla);
         }
 
         //Se dibujan los apartados de nombres y desicion de uno o dos jugadores

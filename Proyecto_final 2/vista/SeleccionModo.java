@@ -9,7 +9,6 @@ import java.io.IOException;
 public class SeleccionModo {
 
     private BufferedImage fondo;
-    private BufferedImage logoUAM;
 
     public SeleccionModo() {
         try {
