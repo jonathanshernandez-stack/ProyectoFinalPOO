@@ -61,6 +61,7 @@ public class PanelJuego extends JPanel {
     Escenario escenario = new Escenario();
     FinalModo finalModo = new FinalModo();
     Instrucciones instrucciones = new Instrucciones();
+    SoundManager soundManager = new SoundManager();
 
     HUD hud = new HUD();  //Head up Display, informacion en pantalla
 
@@ -103,6 +104,7 @@ public class PanelJuego extends JPanel {
     }
 
     public void reiniciarPartida() {
+
         jugador1.reiniciar(80, 500);
         jugador2.reiniciar(1210, 500);
 
@@ -121,7 +123,7 @@ public class PanelJuego extends JPanel {
         rankingGuardado = false;
 
         SoundManager.reproducir("Proyecto_final/resources/Sonidos/inicio.wav");
-        SoundManager.reproducirMusica("Proyecto_final/resources/Sonidos/techno.wav");
+        SoundManager.reproducirMusica("Proyecto_final/resources/Sonidos/Legend.wav");
 
         estadoJuego = JUGANDO;
     }
@@ -189,18 +191,21 @@ public class PanelJuego extends JPanel {
 
         if (teclado.escape) {
             estadoJuego = MENU;
+            SoundManager.detenerMusica();
             return;
         }
 
         if (estadoJuego == MENU) {
 
             if (teclado.teclaI) { // Si presionas I en el menú
+                SoundManager.reproducir("Proyecto_final/resources/Sonidos/presionar_enter.wav");
                 estadoJuego = INSTRUCCIONES; // Muestra instrucciones
                 teclado.teclaI = false; // Apaga la tecla
                 return; // No deja que siga revisando más estados
             }
 
             if (teclado.enter) { // Si presionas ENTER
+                SoundManager.reproducir("Proyecto_final/resources/Sonidos/presionar_enter.wav");
                 estadoJuego = SELECCION_MODO; // Sigue normal a selección de modo
                 teclado.enter = false; // Apaga enter
                 return;
@@ -210,6 +215,7 @@ public class PanelJuego extends JPanel {
         if (estadoJuego == INSTRUCCIONES) {
 
             if (teclado.escape) { // ESC vuelve al menú
+                SoundManager.reproducir("Proyecto_final/resources/Sonidos/presionar_enter.wav");
                 estadoJuego = MENU;
                 teclado.escape = false;
                 return;
@@ -326,6 +332,7 @@ public class PanelJuego extends JPanel {
             }
 
             if (teclado.enter) { // Enter confirma personaje
+                SoundManager.reproducir("Proyecto_final/resources/Sonidos/Seleccionar_personaje.wav");
                 seleccionarPersonaje(seleccionPersonaje.getPersonajeSeleccionado());
                 teclado.enter = false;
                 return;
@@ -333,6 +340,7 @@ public class PanelJuego extends JPanel {
         }
 
         if (estadoJuego == JUGANDO) {
+
             jugador1.update();
             if (contraPC) {
                 jugador2.controlarCPU(jugador1);
@@ -398,6 +406,7 @@ public class PanelJuego extends JPanel {
                     SoundManager.reproducir("Proyecto_final/resources/Sonidos/fin_juego.wav");
 
                     estadoJuego = FIN;
+
                 }
             }
         }
@@ -409,6 +418,7 @@ public class PanelJuego extends JPanel {
         } */
 
         if (estadoJuego == FIN) {
+
             if (teclado.enter) {
                 reiniciarPartida();
                 jugador1.setModoSolo(contraPC);

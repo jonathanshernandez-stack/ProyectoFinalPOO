@@ -300,3 +300,87 @@ Jugador 1;0;4;1 Jugador
 CPU;2000;4;1 Jugador
 Jugador 1;0;3;1 Jugador
 CPU;2000;3;1 Jugador
+Jugador 1;2000;124;2 Jugadores
+Jugador 2;1200;124;2 Jugadores
+Jugador 1;2000;41;2 Jugadores
+Jugador 2;0;41;2 Jugadores
+Valentina;0;8;1 Jugador
+CPU;2000;8;1 Jugador
+Valentina;0;3;1 Jugador
+CPU;2000;3;1 Jugador
+Valentina;0;3;1 Jugador
+CPU;2000;3;1 Jugador
+Valentina;2000;5;1 Jugador
+CPU;1200;5;1 Jugador
+Jugador 1;0;6;1 Jugador
+CPU;2000;6;1 Jugador
+Jugador 1;0;3;1 Jugador
+CPU;2000;3;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;1000;10;1 Jugador
+CPU;2000;10;1 Jugador
+Jugador 1;800;11;1 Jugador
+CPU;2000;11;1 Jugador
+Jugador 1;300;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;3;1 Jugador
+CPU;2000;3;1 Jugador
+Jugador 1;0;6;1 Jugador
+CPU;2000;6;1 Jugador
+Jugador 1;0;3;1 Jugador
+CPU;2000;3;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;3;1 Jugador
+CPU;2000;3;1 Jugador
+Jugador 1;0;6;1 Jugador
+CPU;2000;6;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;3;1 Jugador
+CPU;2000;3;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;4;1 Jugador
+CPU;2000;4;1 Jugador
+Jugador 1;0;7;1 Jugador
+CPU;2000;7;1 Jugador
+Jugador 1;0;6;1 Jugador
+CPU;2000;6;1 Jugador
+Jugador 1;1600;55;2 Jugadores
+Jugador 2;2000;55;2 Jugadores
+Jugador 1;300;20;2 Jugadores
+Jugador 2;2000;20;2 Jugadores
+Jugador 1;1500;14;2 Jugadores
+Jugador 2;2000;14;2 Jugadores
+Jugador 1;0;14;2 Jugadores
+Jugador 2;2000;14;2 Jugadores
+Jugador 1;0;35;2 Jugadores
+Jugador 2;2000;35;2 Jugadores
+Jugador 1;800;23;2 Jugadores
+Jugador 2;2000;23;2 Jugadores
+Jugador 1;0;61;2 Jugadores
+Jugador 2;2000;61;2 Jugadores
+Jugador 1;2000;22;2 Jugadores
+Jugador 2;1100;22;2 Jugadores
+Jugador 1;0;25;2 Jugadores
+Jugador 2;2000;25;2 Jugadores
+Jugador 1;2000;19;2 Jugadores
+Jugador 2;0;19;2 Jugadores
+Jugador 1;0;12;2 Jugadores
+Jugador 2;2000;12;2 Jugadores
+Jugador 1;600;13;2 Jugadores
+Jugador 2;2000;13;2 Jugadores

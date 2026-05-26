@@ -113,7 +113,7 @@ public class InputManager implements KeyListener {  //Escuchará los eventos, ya
             escape = true;
         }
 
-        //Seleccion_Personaje
+        //Instrucciones
         if (codigo == KeyEvent.VK_I) {
             teclaI = true;
         }

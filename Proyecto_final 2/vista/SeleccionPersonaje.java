@@ -1,5 +1,7 @@
 package Proyecto_final.vista;
 
+import Proyecto_final.controlador.SoundManager;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -17,6 +19,7 @@ public class SeleccionPersonaje {
 
     public void moverIzquierda() {
         indiceSeleccionado--; // Se mueve una posición a la izquierda
+        SoundManager.reproducir("Proyecto_final/resources/Sonidos/saltar.wav");
 
         if (indiceSeleccionado < 0) { // Si se pasa del primero
             indiceSeleccionado = nombres.length - 1; // Vuelve al último
@@ -25,6 +28,8 @@ public class SeleccionPersonaje {
 
     public void moverDerecha() {
         indiceSeleccionado++; // Se mueve una posición a la derecha
+        SoundManager.reproducir("Proyecto_final/resources/Sonidos/saltar.wav");
+
 
         if (indiceSeleccionado >= nombres.length) { // Si se pasa del último
             indiceSeleccionado = 0; // Vuelve al primero
@@ -59,6 +64,7 @@ public class SeleccionPersonaje {
             int x = inicioX + i * (cartaAncho + separacion);
 
             if (i == indiceSeleccionado) {  //Permite darle brillo a la carta seleccionada
+                
                 g2.setColor(new Color(255, 220, 80)); // Marco dorado del seleccionado
                 g2.fillRoundRect(x - 10, y - 10, cartaAncho + 20, cartaAlto + 20, 25, 25);
             }
